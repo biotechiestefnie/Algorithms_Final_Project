@@ -1,12 +1,14 @@
 ---
-title: "Concept.Rmd"
+title: "Conceptual Progress Report"
 author: "Stefanie Moreno"
 date: "2026-03-21"
 output:
   pdf_document:
     latex_engine: xelatex
-
+  md_document:
+    variant: gfm
 ---
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
