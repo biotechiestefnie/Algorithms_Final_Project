@@ -84,7 +84,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### 3.1. Data structures used:
     
-- Valid bases: {A, T, G, C}
+- Valid nucleotides: {A, T, G, C}
 - counts[prefix][base] -> integer
 - probs[prefix][base] -> float
 
