@@ -3,14 +3,11 @@ title: "Conceptual Progress Report"
 author: "Stefanie Moreno"
 date: "2026-03-21"
 output:
-  pdf_document:
-    latex_engine: xelatex
-
+  md_document:
+    variant: markdown_github
+  html_document: default
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 # Conceptual Progress Report
 
@@ -126,6 +123,7 @@ knitr::opts_chunk$set(echo = TRUE)
     train_models.py -> command‑line wrapper
     utils.py -> helper functions
     __init__.py -> package marker
+    data_loading.py -> I/O module for reading FASTA files and loading sequences by class
 
 **Test Suite** The tests directory contains pytest files used to validate the correctness of the implementation. These tests are not part of the program’s conceptual modules; they are external validation artifacts.
 
@@ -581,36 +579,36 @@ Counting kmers:
 
 Each sequence contributes:
 
-                            (L-k) kmers
+                            *(L-k) kmers*
                             
 Total cost per class:
                        
-                        O(N*(L-k)) ~ O(NL)
+                        *O(N x (L-k)) ~ O(NL)*
                         
 Normalizing counts: The number of possible states is 4^k and each state has 4 outgoing transitions 
 Worst case normalization cost:
                             
-                            dO(4^k)
+                            *dO(4^k)*
                             
 Total training cost across all classes:
 
-                        O(C * (NL + 4^k))
+                        *O(C x (NL + 4^k))*
                         
 **Classification Phase:** 
 
 For each test sequence of length L, extracting each prefix and scoring transitions:
                        
-                           O(L-k) ~ O(L)
+                           *O(L-k) ~ O(L)*
 
 If there are C classes:
 
-                            O(C*L)
+                            *O(C x L)*
 
 **Overall Time Complexity:** 
 
 The overall time complexity of the training and classification phases combined is:
                         
-                        O(C * (NL + 4^k) + C*L) ~ O(C * (NL + 4^k))
+                        *O(C x (NL + 4^k) + C x L) ~ O(C x (NL + 4^k))*
                         
 - Training dominates when 4^k becomes large  
 - Classification dominates when the number of test sequences is large 
@@ -629,16 +627,16 @@ A k-order Markov model stores:
 
 Space per class:
 
-                           O(4^k)
+                           *O(4^k)*
 
 Total space across all classes:
 
-                           O(c*4^k)
+                           *O(C x 4^k)*
 **Sequence Storage:**
 
 - FASTA dictionary + list of sequences:
                 
-                           O(NL)
+                           *O(NL)*
 
 ### 4.3 Bottlenecks
 
@@ -762,53 +760,37 @@ Mitigation:
         
 **Imbalanced training data** 
     
-Mitigation: 
-
-- smoothing, minimum count thresholds
+Mitigation:  smoothing, minimum count thresholds
 
 **Invalid characters in sequences** 
     
-Mitigation: 
+Mitigation: cleaning step in both training and scoring
 
-- cleaning step in both training and scoring
+**Short sequences** 
 
-** Short sequences** 
-
-Mitigation: 
-
-- return -inf for sequences ≤ k
+Mitigation: return -inf for sequences ≤ k
 
 ### 6.2 New Risks Identified During Pseudocode Development
 
 **Empty class models** 
     
-Mitigation:
-
-- explicit error in classify_sequence and classify_test_set
+Mitigation: explicit error in classify_sequence and classify_test_set
 
 **Smoothing errors** 
 
-Mitigation: 
-
-- enforce alpha > 0
+Mitigation: enforce alpha > 0
 
 **Silent failures in normalization** 
 
-Mitigation: 
-
-- assert probability rows sum to 1
+Mitigation: assert probability rows sum to 1
 
 **Incorrect prefix extraction**
     
-Mitigation: 
-
-- unit tests for prefix boundaries
+Mitigation: unit tests for prefix boundaries
 
 **Log underflow:** Probability becomes so small can no longer be represented numerically, collapses to -inf or NaN. A k-order Markov model multiplies many conditional probabilities, log space helps but doesn't eliminate the problem 
 
-Mitigation: 
-
-- use log space accumulation exclusively
+Mitigation: use log space accumulation exclusively
 	
 ## 7. Generative AI Usage
 
@@ -839,7 +821,7 @@ Mitigation:
 ## REFERENCES
 Hu, S. & Chen, C. (2024). Performance models for sequence alignment algorithms based on Burrows-Wheeler Transform. ICBBT (16th Annual): p.1-9. https://dl.acm.org/doi/10.1145/3674658.3674661
 
-Ost, G. & Takahashi, D. L. (2023). Sparse Markov models for high dimensional inference. Cornell University AriXiv: 2202.08007, p.1-44. https://arxiv.org/abs/2202.08007
+Ost, G. & Takahashi, D. L. (2023). Sparse Markov modelsd for high dimensional inference. Cornell University AriXiv: 2202.08007, p.1-44. https://arxiv.org/abs/2202.08007
 
 Pokrzywa, R. (2009) Application of the Burrows-Wheeler Transform for searching for tandem repeats in DNA sequences. Int J Bioinform Res App. 5(4):432-46.
 https://doi.org/10.1504/IJBRA.2009.027517
