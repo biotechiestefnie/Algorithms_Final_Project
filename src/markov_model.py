@@ -1,4 +1,4 @@
-# src/markov_model.py
+
 
 # Import packages
 import math  # for computing log probabilities
@@ -7,64 +7,61 @@ import math  # for computing log probabilities
 from collections import defaultdict  # for nested dictionaries with default values
 
 
-def count_kmers(sequence, k):
+def count_kmers(sequences, k):
     """
-    Count all (k+1)-mers in sequence
+    Count all (k+1)-mers across a list of sequences.
     For a k-order Markov model, we need counts of:
         prefix (length k) -> next base
     Parameters:
-        sequence (str): DNA sequence consisting of characters A, C, G, T
-        k (int): Markov order; number of previous bases used as context
+        sequences (list[str]): list of DNA sequences (strings)
+        k (int): Markov order
     Returns:
         dict: Nested dictionary where:
               counts[prefix][next_base] = integer count
-              prefix is a string of length k
-              next_base is a single character (A, C, G, T)
     """
 
-    # Create a nested dictionary:
-    # Outer keys = prefixes of length k
+    # Nested dictionary:
+    # Outer keys = prefixes length k
     # Inner keys = next bases, values = counts
     counts = defaultdict(lambda: defaultdict(int))
 
-    # Loop over valid positions where a (k+1)-mer exists
-    # range stops at len(sequence) - k so that sequence[i+k] is valid
-    for i in range(len(sequence) - k):
+    # Loop over each sequence in list
+    for seq in sequences:
 
-        # Extract prefix of length k starting at position i
-        prefix = sequence[i:i+k]
+        # Loop over valid positions with (k+1)-mers
+        for i in range(len(seq) - k):
 
-        # Extract base immediately following prefix
-        next_base = sequence[i+k]
+            # Extract prefix length k
+            prefix = seq[i:i+k]
 
-        # Increment count for prefix → next_base transition
-        counts[prefix][next_base] += 1
+            # Extract base immediately following prefix
+            next_base = seq[i+k]
 
-    # Return nested dictionary of counts
+            # Increment count for prefix → next_base transition
+            counts[prefix][next_base] += 1
+
     return counts
 
 
 
 def estimate_transition_probs(kmer_counts, k, smoothing=1):
     """
-    Convert k-mer counts into conditional probabilities with Laplace smoothing.
-    For each prefix of length k:
+    Convert k-mer counts into conditional probabilities with Laplace smoothing
+    For each prefix length k:
         P(next_base | prefix) = (count + smoothing) / (total + 4*smoothing)
     Parameters:
         kmer_counts (dict): Nested dictionary mapping:
-                            prefix (str of length k) →
-                                dict of next_base → count
+                            prefix (str of length k) → dict of next_base → count
         k (int): Markov order (not used directly here but included for clarity)
         smoothing (int): Laplace smoothing constant (default = 1)
     Returns:
-        dict: Nested dictionary where:
-              model[prefix][next_base] = probability (float)
+        model (dict): Nested dictionary where model[prefix][next_base] = probability (float)
     """
 
     # Initialize dictionary to store final probability model
     model = {}
 
-    # Iterate over each prefix and dictionary of next-base counts
+    # Iterate over each prefix and dictionary next-base counts
     for prefix, next_base_counts in kmer_counts.items():
 
         # Initialize inner dictionary for prefix
@@ -87,7 +84,6 @@ def estimate_transition_probs(kmer_counts, k, smoothing=1):
     return model
 
 
-
 def log_likelihood(sequence, model, k):
     """
     Compute log-likelihood of sequence under trained k-order Markov model
@@ -100,7 +96,7 @@ def log_likelihood(sequence, model, k):
         model (dict): Nested dictionary of conditional probabilities
         k (int): Markov order
     Returns:
-        float: log-likelihood of the sequence under the model
+        float: log-likelihood of sequence under model
     """
 
     # Initialize running log-likelihood
@@ -112,20 +108,21 @@ def log_likelihood(sequence, model, k):
     # Loop over all valid positions where prefix + next base exists
     for i in range(len(sequence) - k):
 
-        # Extract prefix of length k
+        # Extract prefix length k
         prefix = sequence[i:i+k]
 
         # Extract next base
         next_base = sequence[i+k]
 
-        # If prefix exists in model, use probability distribution
+        # If prefix exists, use probability distribution
         if prefix in model:
 
-            # Get probability of next_base; fallback epsilon value if missing
-            prob = model[prefix].get(next_base, 1e-12)
-
-            # Add log(probability) to running total
-            logL += math.log(prob)
+            # If next_base never observed, use fallback epsilon value
+            if next_base not in model[prefix] or model[prefix][next_base] == 0:
+                logL += math.log(1e-12)
+            else:
+                # Add log(probability) to running total
+                logL += math.log(model[prefix][next_base])
 
         # If prefix never seen during training
         else:
@@ -134,3 +131,34 @@ def log_likelihood(sequence, model, k):
 
     # Return total log-likelihood
     return logL
+
+
+def classify_sequence(sequence, models, k):
+    """
+    Classify a sequence by computing log-likelihood under each class model
+    Parameters:
+        sequence (str): DNA sequence to classify
+        models (dict): models[class_label][k] = model_dict
+        k (int): Markov order
+    Returns:
+        (best_class, best_logL)
+    """
+
+    # Initialize variables for best class and logL
+    best_class = None
+    best_logL = float("-inf")
+
+    for class_label in models:
+        model_for_k = models[class_label].get(k)
+
+        if model_for_k is None:
+            continue  # no model for k
+
+        logL = log_likelihood(sequence, model_for_k, k)
+
+        if logL > best_logL:
+            best_logL = logL
+            best_class = class_label
+
+    return best_class, best_logL
+

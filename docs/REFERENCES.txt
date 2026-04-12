@@ -1,0 +1,35 @@
+EPDnew (Eukaryotic Promoter Database), Human Promoter Collection (hg38).
+Meylan P, Dreos R, Ambrosini G, Groux R, Bucher P.
+EPD in 2020: enhanced data visualization and extension to ncRNA promoters.
+Nucleic Acids Research, 2020; 48(D1):D65–D69.
+Last update: October 2019.
+Accessed: April 2026.
+URL: https://epd.epfl.ch/human/
+1796 sequences representative set of not closely related sequences
+
+
+Intron/exon data
+https://www.gencodegenes.org/human/release_19.html
+Comprehensive gene annotation	ALL
+It contains the comprehensive gene annotation on the reference chromosomes, scaffolds, assembly patches and alternate loci (haplotypes)
+This is a superset of the main annotation file
+GTF
+and
+Protein-coding transcript translation sequences	CHR
+Amino acid sequences of coding transcript translations on the reference chromosomes
+Transcript biotypes: protein_coding, nonsense_mediated_decay, non_stop_decay, IG_*_gene, TR_*_gene, polymorphic_pseudogene
+Fasta
+Harrow J, Frankish A, Gonzalez JM, et al.
+GENCODE: the reference human genome annotation for The ENCODE Project.
+Genome Research 2012;22(9):1760–1774.
+doi:10.1101/gr.135350.111
+This is the canonical citation for all GENCODE human releases, including v19.
+GENCODE Human Release 19 (GRCh37.p13)
+Available at: https://www.gencodegenes.org/human/release_19/
+© EMBL‑EBI, HAVANA, and Ensembl.
+Correct Citation:
+Intron and exon sequences were extracted from the
+GENCODE Human Release 19 (GRCh37.p13) comprehensive gene annotation (GTF)
+and the corresponding GRCh37.p13 genome FASTA, downloaded from the GENCODE FTP site.
+
+Repeat Motif Data
