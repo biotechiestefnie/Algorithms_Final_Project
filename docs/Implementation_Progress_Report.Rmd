@@ -54,7 +54,7 @@ https://github.com/biotechiestefnie/Algorithms_Final_Project.git
         * training/
         * testing/
 
-    * per_sequence_stats/
+    * per_sequence_classification/
         * prototype/
         * training/
         * testing/
@@ -69,13 +69,16 @@ https://github.com/biotechiestefnie/Algorithms_Final_Project.git
 
 
 * docs/
-    * IMPLEMENTATION.md -> Prototype data implementation, initial evaluation, and parameter optimizations/model
+    * IMPLEMENTATION.md -> Prototype data implementation, initial evaluation, and
+                           parameter optimizations/model
                            adjustments
-    * Implementation_Progress_Report.Rmd -> This file, working document for IMPLEMENTATION.md
+    * Implementation_Progress_Report.Rmd -> This file, working document for
+                                            IMPLEMENTATION.md
     * README.md -> Project overview, dependencies, and instructions for running code and reproducing results
     * PROPOSAL.md -> Research question, justifications, and experimental design
-    * PROPOSAL.nb.html -> Working document for PROPOSAL.md
-    * CONCEPT.md -> Conceptual Progress Report including program pseudocode, assumptions, and mitigation strategies
+    * Proposal.nb.html -> Working document for PROPOSAL.md
+    * CONCEPT.md -> Conceptual Progress Report including program pseudocode, assumptions, and mitigation 
+                    strategies
     * Conceptual_Progress_Report.md -> Working document for CONCEPT.md
     * REFERENCES.md -> Annotated bibliography and reference literature supporting the conceptual framework of
                        project
@@ -151,7 +154,15 @@ https://github.com/biotechiestefnie/Algorithms_Final_Project.git
                                                   performance with these sequences
   
   
-    * test/ (Datasets for Markov model testing and validation)
+    * training/ (Training datasets for final model development and optimization)
+        These files have not yet been created as I am still assessing and fine-tuning optimal data filters,
+        training for varying k values, and evaluating preliminary results from the prototype run. Once I have
+        established a robust data preparation pipeline and have a clearer understanding of how the algorithm
+        performs on the prototype data, I will generate larger training datasets for each structural class
+        (promoters, introns, exons, repeats) that are suitable for comprehensive model development and optimization
+        across different k values and class characteristics
+  
+    * test/ (Test datasets for final Markov model testing and validation)
         These files have not yet been created as I am still assessing and fine-tuning optimal data filters,
         training for varying k values, and evaluating preliminary results on the prototype datasets. Once I have
         established a robust data preparation pipeline and have a clearer understanding of how the algorithm
@@ -163,8 +174,8 @@ https://github.com/biotechiestefnie/Algorithms_Final_Project.git
 * src/ (Implementation script, data preparation script, and additional helper scripts for command‑line execution)
     * __init__.py -> Package marker file to indicate that src/ is a Python package, allowing for modular code
                      organization and imports across different scripts within the source directory
-    * classify.py -> Provides all evaluation‑stage functionality, including sequence classification, accuracy
-                     metrics, confusion matrices per k, and advanced model performance analysis
+    * analyze_data.py -> Provides all evaluation‑stage functionality, including sequence classification, accuracy
+                         metrics, confusion matrices per k, and advanced model performance analysis
     * data_preparation.py -> Python script that parses raw FASTA files for promoters, introns, exons, and repeats,
                              applies necessary filtering criteria (e.g., length thresholds, quality checks) to
                              generate prototype datasets by randomly sampling sequences for positive and negative
@@ -184,10 +195,25 @@ https://github.com/biotechiestefnie/Algorithms_Final_Project.git
                          best log likelihood across all class models
     * train_models.py -> Trains Markov models for each class and k‑value, handles all training‑stage edge cases,
                          and returns full nested model dictionary used for downstream classification
-    * reporting.py -> Contains logic to generate all output artifacts on model performance for results/ directory 
-                      for all data classes, k values, artifact types, and model runs (prototype, training, testing)
+    * output_to_file.py -> Contains logic to generate all output artifacts on model performance for results/
+                           directory for all data classes, k values, artifact types, and model runs (prototype, 
+                           training, testing)
     * utils.py -> Placeholder for helper functions or utility functions to support main implementation mitigations
                   as needed; has yet to be written
+    * prototype_run.ipynb -> Jupyter Notebook that serves as the primary driver program for executing the full
+                            Markov model pipeline on the prototype datasets. This notebook imports all necessary
+                            modules from src/, loads the prototype datasets, trains Markov models for each class
+                            and k value, classifies sequences, evaluates performance metrics, and generates output
+                            files for results reporting. The notebook is designed to allow for iterative
+                            development, enabling immediate modifications to model parameters, execution calls, and
+                            documentation of insights as the prototype run unfolds
+    * final_run.ipynb -> Jupyter Notebook that will serve as the primary driver program for executing the full
+                         Markov model pipeline on the final training and test datasets. This notebook will import
+                         all necessary modules from src/, load the final training and test datasets, train Markov
+                         models for each class and k value, classify sequences, evaluate performance metrics, and
+                         generate output files for reporting results. The notebook will serve strictly as a record 
+                         of execution, and will not be used for any modifications to the codebase, which will be
+                         finalized and frozen after the prototype run
 
 
 * tests/ (Pytest unit tests for validating individual functions and components of the implementation)
@@ -213,16 +239,59 @@ https://github.com/biotechiestefnie/Algorithms_Final_Project.git
     * conftest.py -> Shared pytest configuration and fixtures available to all test files in this directory
 
 
-**Note:** The implementation is currently in progress, and therefore, individual results files do not yet exist. However, the filetypes will be chosen to optimize visualization of results and make interpretations clear and informative. Final outputs will be organized by artifact type (e.g., accuracy curves, confusion matrices, logs), with each artifact subdirectory containing separate prototype, training, and testing runs folders to maintain a consistent, reproducible structure as the pipeline matures.
+* results/ (Output files generated from model runs, organized by artifact type, run stage, and tested k orders)
+    * accuracy_curves/
+        * prototype/
+            * single_k_order_2.csv ->
+            * all_k_orders.csv ->
+        * training/
+        *testing/
+    * confusion_matrices/
+        * prototype/
+            * single_k_order_2.csv ->
+            * all_order_k_1.csv ->
+            * all_order_k_2.csv ->
+            * all_order_k_3.csv ->
+        * training/
+        * testing/
+    * logs/
+        * prototype/
+            * single_k2_likelihoods.json ->
+            * all_k_likelihoods.json ->
+        * training/
+        * testing/
+    * per_sequence_classification/
+        * prototype/
+            * single_k_order_2.csv ->
+            * all_k_orders.csv ->
+        * training/
+        * testing/
+    * summary_stats/
+        * prototype/
+            * single_k_order_2.txt ->
+            * all_k_orders.txt ->
+        * training/
+        * testing/
+    
+**Note:** The implementation is currently in progress, and therefore final results output files exist only for the prototype run. As the study advances and mode limitations are evaluated alongside optimization and mitigation strategies, the selected file types for reporting will prioritize clear visualization and interpretable summaries. 
 
 
-* LICENSE- Top‑level file defining the project’s open‑source license and usage permissions
+* LICENSE -> Top‑level file defining the project’s open‑source license and usage permissions
 
 
-* README.md- Primary top‑level document that introduces the study, explains its purpose, and provides essential instructions for installation, usage, and repository navigation
+* README.md -> Primary top‑level document that introduces the study, explains its purpose, and provides essential
+               instructions for installation, usage, and repository navigation.
+               *NOTE:* This file has not been completed and will not be considered complete until all modifications
+               and runs are instantiated.
 
 
-* pytest.ini- A root‑level configuration file telling pytest where to find source code and tests for consistent, reproducible test discovery
+* REQUIREMENTS.txt -> A text file listing all Python package dependencies and their specific versions required to
+                      run the code in the repository, ensuring reproducibility. 
+                      **NOTE:** This file will not be considered complete until all modifications have been
+                      instated and no further changes to the codebase will be made.
+
+* pytest.ini -> A root‑level configuration file telling pytest where to find source code and tests for consistent,
+                reproducible test discovery
 
 
 ### Project Snapshot
@@ -231,8 +300,8 @@ https://github.com/biotechiestefnie/Algorithms_Final_Project.git
 
 How much Markov “memory” is required for Markov Chain model to faithfully delineate between coding regions (Exons), noncoding regions (Introns), promoters, and repetitive elements within the human genome? Understanding the relationship between structural signal complexity and Markov memory is biologically meaningful and algorithmically valuable because it can yield insight on:
 
-    * How simple or difficult it is to detect genomic functional elements with this computational approach
-    * Where the model breaks down for each functional class
+    * How easy or difficult it is to detect genomic functional elements with this algorithmic approach
+    * Where the model breaks down for each class of structural features
     * How memoization influences overfitting versus overgeneralization within each class
     * Which biological signals are localized and which are long-range
         * A biological class is local if the information needed to recognize it is contained in short, contiguous
@@ -244,38 +313,37 @@ How much Markov “memory” is required for Markov Chain model to faithfully de
 
 **Algorithm:**
 
-The successful completion of multiple genome sequencing projects paired with significant advancements in Next Generation Sequencing (NGS) technologies has generated an unprecedented wealth of genomic data, providing a rich substrate for computational analysis and scientific discovery. Markov chains form a fundamental class of probabilistic models that have become indispensible tools for investigating a wide range of bioinformatics problems, from gene prediction to protein structual analysis. They are underpinned by a robust mathematical framework that can be exploited to capture the dynamic dependencies between adjacent nucleotides while simultaneously simulating their structural characteristics (Ma et al., 2025), making them inherently well-suited for extracting meaningful insights from complex biological sequences.
+The successful completion of numerous genome sequencing projects, paired with considerable advancements in Next Generation Sequencing (NGS) technologies, has generated an unprecedented wealth of genomic data, providing a rich substrate for scientific advancements among the omics disciplines. Markov chains form a fundamental class of probabilistic models that have become indispensible tools for investigating a wide range of biological unknowns, from gene prediction to protein structual analysis. These models are underpinned by a robust mathematical framework that can be exploited to capture the dynamic dependencies between adjacent nucleotides while simultaneously simulating their structural characteristics (Ma et al., 2025), making them inherently well-suited for extracting meaningful insights from complex sequence datasets.
+
+A key consideration of Markov applications is the Markov property, which asserts that the next state depends only on a limited number of previous states. While this assumption greatly simplifies computational complexity, it also imposes a “memoryless” constraint that is excessively limiting for investigating biological sequences, which contain countless motifs, periodicities, and regulatory signals, many extending well beyond a single nucleotide of context (Ryabco & Usotskaya, 2008). To address this limitation, higher‑order Markov models incorporate a longer history by conditioning on the previous k nucleotides. And while increasing k allows the model to uncover richer local dependencies and more biologically meaningful patterns, it also expands the state space exponentially (4^k), requiring substantially more data to estimate accurate transition probabilities in addition to an ultimately unrealistic computational investment (Burkes & Azad, 2020).
+
+This trade‑off between contextual richness and data sparsity makes the choice of k a critical strategic decision. If k is too small, the model fails to capture important structural features; if k is too large, the model becomes unstable, overfits, or collapses due to insufficient observations. Understanding how Markov memory interacts with the complexity of biological signals is therefore essential for determining when these models are applicable, where they break down, and how much context is required for reliable structural discrimination in the genome.
+
+For this study, I implement deterministic k‑order Markov chains as a multi‑class generative classifier, training a separate model for each genomic feature. In this formulation, nucleotides constitute the basic alphabet, and the effective states of a k‑order model correspond to all possible k‑mers. Each model learns the class‑specific transition probabilities governing how nucleotides follow one another within these k‑mer contexts across increasing values of k. Each model estimates the likelihood of a sequence by evaluating the conditional probability of a nucleotide given the previous k nucleotides and accumulating these probabilities in log space. By systematically increasing the Markov order and evaluating classification performance across promoters, introns, exons, and repeats, the study directly measures how much contextual memory is required for faithful recognition and identifies the precise moment at which the models begin to fail and why. These insights can help pave the way for more successful future applications of Markov models in genomics, informing the design of more sophisticated models that balance context and complexity.
 
 
-A key consideration of Markov applications is the Markov property, which asserts that the next state depends only on a limited number of previous states. While this assumption simplifies computation, it also imposes a “memoryless” constraint that can be limiting for biological sequences, which frequently contain motifs, periodicities, and regulatory signals that extend beyond a single nucleotide of context (Ryabco & Usotskaya, 2008). To address this, higher‑order Markov models incorporate a longer history by conditioning on the previous k nucleotides. And while increasing k allows the model to uncover richer local dependencies and more biologically meaningful patterns, it also expands the state space exponentially (4^k), requiring substantially more data to estimate accurate transition probabilities in addition to an ultimately unrealistic computational investment (Burkes & Azad, 2020).
+### Current Implementation Status:
 
-This trade‑off between contextual richness and data sparsity makes the choice of k a central modeling decision. If k is too small, the model fails to capture important structural features; if k is too large, the model becomes unstable, overfits, or collapses due to insufficient observations. Understanding how Markov memory interacts with the complexity of biological signals is therefore essential for determining when these models are applicable, where they break down, and how much context is required for reliable structural discrimination in the genome.
+The full pseudocode outlined in the Conceptual Progress Report has now been implemented. Most critically, this includes the preliminary version of the Markov model, which serves as the core algorithmic component of the project. The main implementation resides in src/markov_model.py, designed as an importable module executed from the main driver program within the Jupyter Notebook run_markov_pipeline.ipynb. This notebook functions as the central focus of the entire Markov pipeline, coordinating data loading, model training, evaluation, and results reporting. Its structure supports iterative development, allowing for immediate modifications to take place as I stitch together execution calls, perform debugging strategies, interpret preliminary outputs, make adjustments to model parameters, all while being able to thoroughly document and justify each step of the process.
 
-For this study, I implement deterministic k‑order Markov chains as a multi-class generative classifier, training one model for each genomic feature to learn the classes' unique transition probabilities for nucleotides in a sequence over increasing orders of k. Each model estimates the likelihood of a sequence by evaluating the conditional probability of a nucleotide given the previous k nucleotides and accumulating these probabilities in log space. By systematically increasing the Markov order and evaluating classification performance across promoters, introns, exons, and repeats, the study directly measures how much contextual memory is required for faithful recognition and identifies the precise moment at which the models begin to fail and why. These insights can help pave the way for more successful future applications of Markov models in genomics, informing the design of more sophisticated models that balance context and complexity.
-
-
-*Current Implementation Status:*
-
-The full pseudocode outlined in the Conceptual Progress Report has now been implemented. Most critically, this includes the preliminary version of the Markov model, which serves as the core algorithmic component of the project. The main implementation resides in src/markov_model.py, designed as an importable module executed from within the Jupyter Notebook run_markov_pipeline.ipynb. This notebook functions as the primary driver for the entire pipeline, coordinating data loading, model training, evaluation, and results reporting. Its structure supports iterative development, allowing me to refine the implementation as I examine preliminary outputs, adjust parameters during the prototype run, and thoroughly document each step, including mitigation strategies and justifications for all modifications.
-
-The raw data extraction phase unexpectedly became a test of resilience and problem‑solving. After successfully retrieving 1,796 high‑quality promoter annotations aligned to the hg19/GRCh37 assembly, I discovered that UCSC had removed exon and intron FASTA export functionality for hg19/GRCh37 after 2023, leaving only limited annotation downloads and no sequence‑level extraction options. This forced me to redesign the entire extraction workflow: instead of relying on UCSC’s direct FASTA exports, I had to reconstruct exon and intron sequences manually using the genome FASTA and GENCODE v19 annotation files. As a result, extracting raw sequences for all four structural classes—followed by filtering, random sampling, and constructing both positive and negative prototype datasets—expanded into a substantial task of its own. To prevent this extensive data‑preparation process from overwhelming the model pipeline narrative, I separated the workflows by creating dedicated executables and a standalone Jupyter Notebook specifically for data collection, preprocessing, and preliminary analysis. This ensures that the model implementation and evaluation remain the primary focus of the project, while the data preparation steps are still documented in full detail. 
+The raw data extraction phase unexpectedly became a test of resilience and problem‑solving in the earlier phases of the study. After successfully retrieving 1,796 high‑quality promoter annotations aligned to the hg19/GRCh37 assembly, I discovered that UCSC had removed exon and intron FASTA export functionality for hg19/GRCh37 after 2023, leaving only limited annotation downloads and no sequence‑level extraction options. This forced me to redesign the entire extraction workflow: instead of relying on UCSC’s direct FASTA exports, I had to reconstruct exon and intron sequences manually using the genome FASTA and GENCODE v19 annotation files. As a result, extracting raw sequences for all four structural classes—followed by filtering, random sampling, and constructing both positive and negative prototype datasets—expanded into a substantial task of its own. To prevent this extensive data‑preparation process from overwhelming the model pipeline narrative, I separated the workflows by creating dedicated executables and a standalone Jupyter Notebook specifically for data collection, preprocessing, and preliminary analysis. This ensures that the model implementation and evaluation remain the primary focus of the project, while the data preparation steps are still documented in full detail. 
 
 During implementation, several deviations from the original pseudocode became necessary. The most significant change involved restructuring the program design for the model from a main executable script into modular Python files that include: 
 
     * data_loading.py 
     * markov_model.py
     * train_model.py 
-    * classify.py 
-    * reporting.py
+    * analyze_data.py 
+    * output_to_file.py
 
-All of which are designed to be imported for execution into the model pipeline Jupyter Notebook, which is now the primary driver program for the model. This allowed for clearer separation of steps and significantly simplified debugging during the prototype phase. 
+All of which are designed to be imported for execution into the model pipeline inside the Jupyter Notebooks: prototype_run.ipynb and final_run.ipynb , which is now where the primary driver calls for the model will be executed from. This allowed for clearer separation of steps and significantly simplified debugging during the prototype phase. Additionally, it allows me to document execution as it occurs, and for the prototype run, permits immediate optimization steps to take place and be documented. Essentially, these notebooks serve as records of implementation. All parameters and codebase will be finalized prior to the final run implementation, and the final_run.ipynb will be frozen as a record of execution with only documentation as each step is implemented. This design choice was made to maintain a clear narrative and focus on the model implementation and evaluation, while still allowing for necessary adjustments during the prototype phase.
 
-Additionally, I implemented a comprehensive and exploratory data extraction and preparation workflow with separate scripts and a dedicated Jupyter Notebook to execute and document all steps, improvisions, insights, class characteristics, justifications, and preliminary analyses in preparation for the prototype run. This workflow was necessary to overcome the unexpected challenges of raw data retrieval and to ensure that the model implementation and evaluation remain the central focus of the project. This was a critical decision and a major deviation from the original design of the study, but it was absolutely necessary to maintain the project centered upon model implementation and evaluation, while still including a thorough and transparent documentation of the data preparation process for reproducibility.
- 
+Additionally, I implemented a comprehensive and exploratory data extraction and preparation workflow with separate scripts. I also decided to create and a dedicated Jupyter Notebook called data_preprocessing.ipynb to execute and document all data preparation steps, improvisions, insights, class characteristics, justifications, and preliminary analyses occurring prior to the prototype run. This was a critical decision and a major deviation from the original design of the study, but it was absolutely necessary to maintain the project centered upon model implementation and evaluation, while still including a thorough and transparent documentation of the data preparation process for reproducibility.
+
 
 *Prototype Demo Description:*
 
-The minimal prototype run is executed through the Jupyter Notebook run_markov_pipeline.ipynb, which imports the core modules from the src/ directory. The notebook expects pre‑generated prototype datasets located in data/prototype/, including:
+The minimal prototype run is executed through the Jupyter Notebook prototype_run.ipynb, which imports the core modules from the src/ directory. The notebook expects pre‑generated prototype datasets located in data/prototype/, including:
 
     * positive_promoters.fa
     * negative_promoters.fa
@@ -290,34 +358,109 @@ The minimal prototype run is executed through the Jupyter Notebook run_markov_pi
      * negative_repeats.fa
 
 
-Running the notebook trains preliminary Markov models for each structural class, classifies all prototype sequences, computes accuracy‑vs‑k metrics, and writes output files to the results/ directory under the prototype/ subfolders as files for the positive and negative test results for each structural class.
+Running the implementation notebooks trains preliminary Markov models for each structural class, classifies all prototype sequences, computes accuracy‑vs‑k metrics, and writes output files to the results/ directory under the prototype/ subfolders as files for the positive and negative test results for each structural class.
 
-*Example expected console output snippet:*
+
+*Console Output Snippet:*
+
 
 ```
-Loaded 300 prototype sequences across 4 classes.
-Training Markov models... done.
-Classifying sequences... done.
-Writing results to results/prototype/positive_promoters complete.
+Loaded 300 prototype sequences across 4 classes
+Training Markov models... done
+Classifying sequences... done
+Writing results to results/prototype/positive_promoters complete
 Prototype accuracy at k=1: 0.41
 ```
 
-The notebook also displays a small table of per‑sequence predictions and a summary of class counts, allowing quick verification that the pipeline is functioning end‑to‑end.
+
+*Snippet of Output in Implementation Notebook (Jupyter):*
 
 
-Data Documentation
-Explain:
-The nature and origin of your test data.
-Any preprocessing steps you applied (normalization, filtering, sampling).
-What you consider “ground truth” (if any) or how you are currently interpreting the outputs.
-Initial Observations
+```
+{1: [('TCACTGCAACCTCCGCCTCCTGGGTTCAAGTGATTTCCAGCTAATTTTTGTATTTTTAGTAGAGATGGGGTTTCACCATGTTGGCCAGGCTGGTCTTGAACTCCTGACCTCAAGTGATCCGCCCACTTCGGCCTCCCAAAGTGCTAGGATTACAGACATGAGTCACCACACCCAGACCCCAAAATAGGATTTTCTTAAAGAGCGCTCAGCTTAATTAAAAGTGGATATCTGGGGGGCTGGCACGCGGCAGCGTTGCGGGTGGGAGCGGCTGCAACTCTGGTGCCTGAGGAGCGATACCAAGAGAAATCATCACCCACAATTGGGCCAGTGCAGCAATCAGATTGGGTTCGAGTTCTGGAAACAGCTGTGCACTGAGCATGGTATCAGCCCCAAGGGCACCATGGAGGAGTTCGCTACTGAGGGCACTGACCACAAGGACATCTTTTTCTACCAGGCAGACGATGAGCACTACATCCCCCGGGCTGTGCTGCTGGACCTGGA',
+   None,
+   -inf),
+  ('CACCTCAGGAAAAGGAGGAACATTAGCGCTGGTACAGCCGCCAAGACTTCCGGAAGCTCCATCAATCACTTAGCTCCCCTGGTCTCTCGGGTAGGCATCCGCCCACCGCCCCCATCGTCACTTCCGTCGGCCGACAGCACCCAAGATTGACAGGCGCGGACGTCCAATCAGATGCGGGCCCAGCCCCAAAGCCGAGACGAGGGGCGGGTTTGAGAGCGGAAAGCCCCACCCCTTGCCTGAGTGTGACGTCAGAATCACCATGGCCAGCTATCCTTACCGGCAGGTGAGTGTGTGAGGGGCCCGCGAATCCAGGTAGCGGCGGTGCCAGGCGCAGGCCCGACGTCCCCCTGCTCTTTCTCCCCGCTTTCTCCGCGCCCTTCCCACGATGGGTTCGCTTCAGCGAGGCCTTGCGCTGTAGAGAACCGAAAAGGGACCGTCGGTCGCGCCCTGCTCACGTCATGAAGGACCGCACATTCGCGAGGTCGTGTCGCGCCCCCTTGA',
+   None,
+   -inf),
+  ('AGAAGGAAACACAAAATCTGTTAAATAAGATTTATGTTGGCTGGAGGTTAAAATGCATTTCCAGAGCAGAGTTCAGAGAAAGGCTGGGCTGCTTGTTGCTGGCTAAAGGACAAAGGGTAAGTTTCAGGAAGCAGAAGAGTGAGCAGATGAAATTCAGCACTGGGATCAGGGGAGTGTCTGATTTGCAAAAGGAAAGTGCAAAGACAGCTCCTCCCTTCTGAGGAAACGAAACCAACAGCAGTCCAAGCTCAGTCAGCAGAAGAGATAAAAGCAAACAGGTCTGGGAGGCAGTTCTGTTGCCACTCTCTCTCCTGTCAATGATGGATCTCAGAAATACCCCAGCCAAATCTCTGGACAAGTTCATTGAAGACTATCTCTTGCCAGACACGTGTTTCCGCATGCAAATCAACCATGCCATTGACATCATCTGTGGGTTCCTGAAGGAAAGGTGCTTCCGAGGTAGCTCCTACCCTGTGTGTGTGTCCAAGGTGGTAAAGGTGA',
+   None,
+   -inf),
+  ('GTCCGAGAGACGAGGGGGCGTGTAGGCGGTGACGCCCTGCAAAGTGGCCGGCGTGCTTATCATTACCGAGCTTCCGCGGGCCTGCAGAGCCTGGCGGACTCAGACTTCTCTCCGGAGCGGGATGCGGCCCTACCGCGGCCTCACACTTCTCGCCGGCTTCCCGAGTTCTCGGGGGCGGGGCTTGTGTTTTTACTTCCGGATCCCACAGCTATGACACCGGAAGCCGGAAGCGTGGTAGGGAAGGGCGACCGCGAAACTGGGACTTTCTCGGAGCGCCGGGGCCCTACCAGCGTTCACAGTCCGCCGCTCCCACCCTTCTCACGTCTGACGGACTCTGCTGACAGGTGTGGTCCTTTTCCCCAAAGACAGGGTTCCATCCGTGGGCGTTCCGCCGCCTCCGAAACTTCCCCCGGACGTTCAGGCTCCCCCCTCTTTTTTGGGCCCCAGCCCGTTCCTGCTCCGCGCTTCTGGAGCACTGGCCAAGGCGGGCCGATTCAGGAC',
+   None,
+   -inf),
+ ```
+ 
+**Description of the Prototype Run:**
+
+From the Jupyter Notebook, prototype_run.ipynb:
+
+*Cell 1: Setting the Working Directory*
+
+The first cell verifies that the working directory is correctly set to the project root, Algorithms_Final_Project. Using the os package, it inspects the current working directory and resets it to the root if necessary. This step is essential because all subsequent file paths for data loading, model training, and results output are written relative to the project root. I added this check after encountering an immediate FileNotFoundError during the prototype run. Although my terminal was positioned at the correct root directory and all my filepaths were correctly written, notebook had been launched from within the src/ directory. As a result, every relative path silently resolved to the wrong location. This mismatch halted execution before any model logic could run and required extensive debugging to trace back to the notebook’s launch context.
+
+Best practices emphasize running build, test, and execution commands from the project root so that the full directory structure is visible and consistently interpreted (Reitz, 2024). Because all of my relative paths were written with the root directory as the reference point, enforcing this directory check at the start of the notebook was the most reliable and non‑intrusive solution. This debugging step ultimately highlighted the importance of explicitly validating the working directory at the beginning of any execution workflow—especially in Jupyter, where the launch context may differ from the terminal environment.
+
+*Cell 2: Add src/ to Path and Import All Packages/Modules*
+
+Setting the working directory to the project root fixes file paths, but it does not tell Python where to look for importable modules. Because all of my implementation code is organized within the src/ directory, I needed to add this directory to the Python path at runtime, for which I used the sys Python package.
+
+*Cell 3: Import Modules*
+
+Now that the root is set to the working directory and src/ has been added to the Python path, I can import all modules needed to execute the prototype run. This includes data loading, model training, markov model, analyze data, terminal updates, and output to file. The notebook is now prepared for the prototype run.
+
+*Cell 4: Define Prototype FASTA Paths*
+
+In this cell, I define a dictionary containing the paths to each genomic class's positive and negative prototype FASTA datasets as the value, along with the key designating the class and label (positive or negative). This dictionary acts as a routing map for the pipeline to know how to locate the files without having them hardcoded into the data loading module. This design choice allows for greater flexibility and modularity, as the data loading functions can simply reference this dictionary to access the correct files for each class and label, without needing to know the specific file paths. It also centralizes the file path definitions in one place, making it easier to update or modify the dataset locations in the future without having to change multiple parts of the codebase.
+
+*Cell 5: Load Prototype Data*
+
+### Data Documentation
+
+**Data Extraction:**
+
+I determined during the drafting of my proposal that I would use human sequencing data to evaluate my model, and that the results would be most consistent if all sequences were retrieved from a single high quality resource. UCSC’s Genome Browser provides extensive, well curated human promoter, intron, exon, and repeat annotations, making it an ideal source for this study.
+
+To obtain control sets for each class, I planned to implement dinucleotide shuffling on randomly selected sequences sampled from the same raw data file as the positive data, after the positive sequences had been removed. Dinucleotide shuffling preserves the first order dependency structure of real biological sequences—specifically, the frequencies of adjacent nucleotide pairs—while disrupting the higher order patterns that define true functional elements like promoters. This produces negative data with predictable behavior across increasing Markov orders: a 0th order model sees nearly identical base composition, a 1st order model sees nearly identical dinucleotide structure, and only higher order models begin to detect meaningful differences. By holding low order statistics constant, dinucleotide shuffling ensures that classifier performance reflects the true sequence level patterns and structural signals characteristic of real biological elements rather than trivial composition differences. The resulting negative sets are biologically plausible, compositionally matched, and appropriate for controlled prototype development.
+
+Raw promoter data was obtained through UCSC’s link to the Swiss Institute of Bioinformatics’ EPDnew database, which provides experimentally validated eukaryotic POL II promoter annotations that have been maintained for over 25 years (Dreos et al., 2013). Using the database’s Promoter Selection Tool, I chose human promoters aligned to the hg19/GRCh37 assembly and downloaded the maximum available 1,796 sequences from a representative, non redundant set, each spanning −250 to +250 bp for a uniform length of 501 bp. This FASTA file was saved to the project’s data/raw directory.
+
+Upon attempting to obtain the raw data for the intron and exon classes, I discovered that UCSC had removed exon and intron FASTA export functionality for the hg19/GRCh37 assembly after 2023, leaving only limited annotation downloads and no sequence level extraction options. Because my promoter dataset from EPDnew is aligned to hg19, I needed exon and intron sequences from a source that matched this assembly exactly. This led me to GENCODE’s Release History, where I found UCSC's Version 19, the authoritative annotation set for GRCh37. 
+
+To extract raw exon and intron FASTA files from the GENCODE GTF and the GRCh37.p13 genome FASTA, I used the gffread application from the command line of my local system. I created a dedicated micromamba environment containing only gffread and its minimal dependencies to ensure a clean, reproducible environment isolated from other tools on the system. All intron and exon raw sequence extraction occurred outside the Python codebase, and the resulting FASTA files were moved into the project’s data/raw directory for downstream processing. This separation ensured that the Python pipeline remained lightweight and environment agnostic, while the specialized sequence extraction step was handled in a controlled, single purpose environment.
+
+3861 Raw repeat sequences were obtained directly from UCSC’s RepeatMasker track for the hg19/GRCh37 assembly, ensuring that all four structural classes in the study were sourced from a single, assembly‑consistent reference. UCSC provides pre‑extracted RepeatMasker FASTA files that include the full spectrum of annotated repetitive elements—LINEs, SINEs, LTR retrotransposons, DNA transposons, simple repeats, and low‑complexity regions—allowing the complete repeat landscape to be incorporated without subtype filtering or coordinate‑level processing. To maintain strict consistency across datatypes, I downloaded the hg19 RepeatMasker FASTA exactly as provided by UCSC and placed it directly into the project’s data/raw directory with no additional preprocessing, masking, or length‑based exclusion. This ensured that the repeat dataset reflected the same genome assembly, annotation conventions, and sequence formatting as the promoter, exon, and intron sources, preventing methodological drift and guaranteeing that downstream comparisons and classifier behavior would reflect true biological differences rather than inconsistencies in data acquisition or parameter settings.
+
+
+**Preprocessing Steps:**
+
+To prepare the prototype datasets for the model, I executed the data preparation script in the src/ directory to randomly extract 300 sequences (seed = 43) as the positive promoter dataset for prototype testing. These sequences were removed from the raw data dictionary in the program, after which an additional 300 sequences were randomly selected for the negative promoter dataset. The program applied dinucleotide shuffling to the negative set, and a preliminary statistical analysis was performed on both datasets. 
+
+The resulting prototype promoter positive and negative datasets each consist of 300 uniformly sized 501 basepair sequences. Both sets exhibit the expected GC rich composition typical of mammalian promoters: positive promoters contain 18.24% A, 19.52% T, 32.15% G, and 29.84% C (~62% GC), while negative promoters are similarly composed at 17.80% A, 18.75% T, 32.79% G, and 30.46% C (~63% GC). This near identical base composition between sets confirms that the negative sampling strategy did not introduce compositional bias, ensuring that downstream classification performance reflects promoter specific sequence patterns rather than GC driven artifacts.
+
+The data preparation script was then executed to generate the positive and negative prototype datasets for both the exon and intron classes. Running this process through the same automated pipeline ensured that the prototype datasets for each structural class were sampled in a consistent, reproducible manner using identical randomization logic, sequence removal steps, and shuffling procedures. This uniform handling prevented subtle methodological differences from being introduced across datatypes and guaranteed that any downstream comparisons or model behaviors would reflect true biological differences rather than inconsistencies in dataset construction.
+
+The exon datasets show the substantial length variability characteristic of coding regions, ranging from single digit basepair fragments at the lower end to sequences nearly 8–9 kb in length. This wide distribution is reflected in their large standard deviations (≈1170 bp) and broad interquartile ranges (≈1100 bp), indicating considerable heterogeneity even within the 300 sequence prototype sets. Despite this variability, the positive and negative exon datasets remain compositionally well matched: positive exons contain 25.59% A, 21.75% T, 27.00% G, and 25.66% C (~53% GC), while negative exons contain 25.44% A, 21.78% T, 26.80% G, and 25.98% C (~53% GC). 
+
+Intron datasets exhibit an even more dramatic spread, with lengths ranging from only a few dozen basepairs to sequences exceeding 250–400 kb. This produces very large standard deviations (≈19–30 kb) and wide interquartile ranges (≈3800 bp), reflecting the known structural diversity of introns in the human genome. As with exons, the positive and negative intron sets show nearly identical nucleotide composition: positive introns contain 25.13% A, 28.85% T, 23.88% G, and 22.13% C (~46% GC), while negative introns contain 24.66% A, 28.94% T, 23.58% G, and 22.81% C (~46% GC). The close correspondence in both composition and low order statistics confirms that dinucleotide shuffling preserved realistic background properties while removing higher order biological structure, ensuring that downstream classification performance reflects genuine exon  and intron specific sequence patterns rather than artifacts of dataset construction.
+
+The repeat prototype datasets exhibit the extreme length heterogeneity characteristic of RepeatMasker‑annotated elements, ranging from short low‑complexity tracts of only a few basepairs to multi‑kilobase interspersed repeats. The positive repeat set spans 11–6019 bp with a mean length of 159 bp, a median of 51 bp, and a large standard deviation (~403 bp), reflecting the dominance of short simple repeats and SINE fragments interspersed with occasional long retrotransposon segments. The negative repeat set shows a similarly broad distribution (6–6028 bp) but with a slightly higher mean length of 196 bp and a larger standard deviation (~502 bp), consistent with the stochastic nature of random sampling and dinucleotide shuffling applied to a structurally diverse raw pool. 
+
+Despite this variability, the positive and negative repeat datasets remain compositionally well matched: positive repeats contain 25.87% A, 28.46% T, 19.59% G, and 26.08% C with approximately 46% GC, while negative repeats contain 24.35% A, 31.36% T, 20.57% G, and 23.72% C with approximately 44% GC. These closely aligned base compositions and low‑order statistics confirm that the negative sampling and shuffling procedures preserved realistic background properties while removing higher‑order structural signals. As with the other datatypes, this ensures that downstream classifier performance reflects genuine repeat‑specific sequence patterns rather than artifacts of dataset construction or compositional imbalance.
+
+
+### Initial Observations
+
+**Prototype Run Observations:**
+
+After finally working out all the path and working directory bugs, I was able to get my program executing from end to end. 
+
 Summarize what you have learned from the prototype so far:
 Does the algorithm behave as expected on simple examples?
 Did you observe surprising behavior (e.g., instability, runtime, unexpected outputs)?
 Note any preliminary performance measurements or simple comparisons (even if informal).
 Reflection on Changes and Challenges
-Discuss:
-Where your implementation div
+
 
 
 
@@ -354,6 +497,8 @@ Ost, G. & Takahashi, D. Y. (2023). Sparse Markov models for high dimensional inf
 Pertea, G. & Pertea, M. (2020). GFF Utilities: GffRead and GffCompare. *F1000Research,* 9(304): 1-13. https://doi.org/10.12688/f1000research.23297.1.
 
 Ramos, R. T., Carneiro, A. R., Baumbach, J., Azevedo, V., Schneider, M. P., & Silva, A. (2011). Analysis of quality raw data of second generation sequencers with Quality Assessment Software. *BMC Res Notes,* 4:130. https://doi.org/10.1186/1756-0500-4-130
+
+Reitz, k. (2024). The hitchiker's guide to Python. Accessed on Apr2, 2026, from https://docs.python-guide.org
 
 Ryabko, B. & Usotskaya, N. (2008). DNA-sequence analysis using Markov chain models. *IEEE Xplore,* 119-123. https://doi.org/10.1109/ITW.2008.4578634. 
 

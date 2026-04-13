@@ -114,7 +114,7 @@ def write_likelihood_distributions(likelihoods, dataset, run_name, base_dir="res
 
 def write_all_outputs(results, stats, metrics, dataset, run_name, base_dir="results"):
     """
-    High-level wrapper to write all output files for a run.
+    High-level wrapper to write all output files for a run
     Calls:
         write_per_sequence_results()
         write_summary_stats()

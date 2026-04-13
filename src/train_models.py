@@ -26,7 +26,7 @@ def train_all_models(training_data, k_values, alpha):
         k_values (list): list of k orders to train
         alpha (float): Laplace smoothing constant
     Returns:
-        dict: models[k][class_label] = probability model
+        dict: models[class_label][k] = probability model
     """
 
     if not training_data:
@@ -35,31 +35,31 @@ def train_all_models(training_data, k_values, alpha):
     if alpha <= 0:
         raise ValueError("Alpha must be greater than 0")
 
+    # Outer dict keyed by class_label
     models = {}
 
-    for k in k_values:
-        if k < 1 or k > 6:
-            raise ValueError("k must be between 1 and 6")
+    # Loop over each class and its sequences
+    for class_label, seqs in training_data.items():
 
-        models[k] = {}
+        if not seqs:
+            raise ValueError(f"No sequences provided for class '{class_label}'")
 
-        # Iterate over each class and its sequences
-        for class_label, seqs in training_data.items():
+        # Initialize inner dict for this class
+        models[class_label] = {}
 
-            if not seqs:
-                raise ValueError(f"No sequences provided for class '{class_label}'")
+        # Train a model for each k
+        for k in k_values:
 
-            # Extract feature name from class label (e.g., promoter_positive -> promoter)
-            feature = class_label.split("_")[0]
+            if k < 1 or k > 6:
+                raise ValueError("k must be between 1 and 6")
 
-            # Check sequence length edge case
+            # Edge case: sequences too short for this k
             if all(len(seq) <= k for seq in seqs):
-                # Undefined mathematically — track as empty model
-                models[k][class_label] = {}
+                models[class_label][k] = {}
                 continue
 
             # Train model for this class and k
             probs = train_markov(seqs, k, alpha)
-            models[k][class_label] = probs
+            models[class_label][k] = probs
 
     return models
