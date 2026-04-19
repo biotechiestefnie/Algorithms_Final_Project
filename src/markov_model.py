@@ -148,8 +148,8 @@ def classify_sequence(sequence, models, k):
     best_class = None
     best_logL = float("-inf")
 
-    for class_label in models:
-        model_for_k = models[class_label].get(k)
+    for class_label in models[k]:
+        model_for_k = models[k][class_label]
 
         if model_for_k is None:
             continue  # no model for k
