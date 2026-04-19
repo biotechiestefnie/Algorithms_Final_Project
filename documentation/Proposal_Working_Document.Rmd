@@ -1,0 +1,303 @@
+---
+title: "Proposal for Final Project"
+author: "Stefanie Moreno"
+date: "March 12, 2026
+output:
+  md_document:
+    variant: gfm
+---
+
+# Proposal for Final Project
+
+## Title: How Much Memory does a Markov Chain Need to Recognize Biological Sequence Structure?
+
+## Research Question
+### 1.1 Core Question: 
+How much Markov "memory" (eg, Markov order k) is required for a Markov chain to reliably distinguish 
+between different classes of genomic sequence, such as coding regions, noncoding regions, promoters, 
+repetitive elements, and indels?
+
+### 1.2 Why This Question Matters: 
+Different biological signals have different characteristic lengths and patterns:
+
+* coding regions show 3-base periodicity and codon bias
+* Promoters contain longer motifs (TATA, CAAT, GC islands)
+* Repetitive elements have extremely low entropy
+* Indels disrupt local sequence context
+
+Understanding the relationship between biological signal complexity and Markov memory is both 
+algorithmically interesting and biologically meaningful. It can reveal:
+
+* The minimal context needed to detect functional elements
+* Where Markov models break down
+* How memory length affects overfitting vs. generalization
+* Which biological classes are local and which are long-range
+  * A biological class is local if the information needed to
+    recognize it is contained in short, contiguous patterns-
+    things like motifs, periodicity, or simple base-composition
+    biases.
+    These are signals that a low-order Markov chain (small k)
+    would capture.
+  * A biological class is long-range if the information needed to
+    recognize it spans longer motifs, dispersed patterns, or
+    structural features that extend beyond a few nucleotides.These
+    require higher Markov memory (larger k) to model effectively.
+
+This is an innovative study because it reframes a biological classification problem as a 
+memory-capacity analysis of probabilistic models, which is rarely explored explicitly.
+
+## The Algorithm
+### 2.1 Algorithm Class:
+This project uses Markov chains, a class of probabilistic sequence models that estimate 
+the probability of each nucleotide based on the previous k nucleotides (the "memory", 
+or Markov order).
+
+### 2.2 Specific Algorithm:
+I will be implementing a k-th order Markov model for each biological feature, over multiple 
+values of k. The sequence features of focus are:
+
+1. Coding regions
+2. Noncoding regions 
+  * because this investigation is not strictly binary, I must
+    create separate models for each feature, rather than, for
+    example, using a single model to determine coding/noncoding,
+    because the models must learn the characteristics of each
+    feature rather than defaulting to a decision.
+3. Promoters
+4. Repetitive elements
+5. Indels
+
+A single Markov model cannot label sequence features alone; it can only determine how likely 
+a sequence is under its learned distribution. Therefore, a separate model will learn the 
+transition probabilities for each sequence feature under investigation. For instance, the 
+coding model will learn codon-related periodicity, while the promoter model will learn longer 
+motif-driven patterns. Classification emerges when multiple models are compared. For a new test 
+sequence, I will compute its log-likelihood under each trained model:
+
+    logP(sequence | model1), logP(sequence | model2), ...
+
+A single model cannot distinguish classes on its own; the distinction arises only when likelihoods 
+from multiple feature-specific models are compared. According to maximum likelihood classification, 
+the model that assigns the highest likelihood is considered the predicted class. 
+
+  Predicted class = argmaxlogP(sequence | modelclass)
+                      class
+
+This setup allows me to quantify how well different memory lengths k enable the algorithm to distinguish 
+among biological sequence types.
+
+### 2.3 Why This Algorithm Fits the Research Question:
+My research question asks how much Markov memory is required to reliably recognize different sequence 
+features? Markov chains are ideal for this because:
+
+* The Markov order k directly controls the memory length of the
+  model
+* Different biological features within a DNA sequence operate at 
+  different length scales (eg, codon periodicity vs. promoter
+  motifs)
+* By training one model per feature and comparing likelihoods, I 
+  can measure how classification accuracy changes as a function of
+  k
+* This provides a clean, interpretable way to connect algorithm
+  memory to biological signal complexity
+  
+## Data Plan:
+### 3.1 Data Sources:
+To estimate transition probabilities for a k-order Markov chain, there must be enough sequence for most 
+kmers to appear multiple times. Because the number of possible kmers is 4^k, the required dataset grows 
+fast. This means that high-order models (k>6) are only reasonable for very abundant features like noncoding 
+regions or repeats. Promoters and indels do not provide enough data to support high-order models, which 
+naturally limits the maximum usable memory length for those features. I have created the following table 
+to display the scale of data needed based on the Markov order, possible kmers, and features that could 
+reasonably be identified:
+
+Markov   | Possible  |  Minimum   |  Identifiable
+Order    |   kmers   |   bp       |  Features
+k        |           |  needed    | 
+------------------------------------------------------------------
+  1      |    4      |  100bp     |   All
+------------------------------------------------------------------
+  2      |   16      |  1,000bp   |   All
+------------------------------------------------------------------
+  3      |   64      | 10,000bp   |   All
+------------------------------------------------------------------
+  4      |   256     |   50-      |   All
+         |           | 100,000bp  | 
+------------------------------------------------------------------
+  5      |  1,024    |  200-      | coding, noncoding, repeats
+         |           | 500,000bp  | 
+------------------------------------------------------------------
+  6      |  4,096    | 1-5M bp    | noncoding, repeats   
+------------------------------------------------------------------
+  7      |  16,384   | 10-20M bp  | noncoding, repeats (maybe)
+------------------------------------------------------------------
+  8      |  65,536   | 50-100M bp | noncoding
+------------------------------------------------------------------
+
+Based on this information, I will not be considering k>6 because it is not reasonable in terms of the 
+amount of data I will have access to and for what I am looking for to use a higher order. My data 
+needs will therefore be:
+
+* Coding: k = 1-6 -> max 1-5M bp
+* Noncoding: k = 1-6 -> max 1-5M bp
+* Promoters: k = 1-5 -> max 200-500,000 bp
+* Repeats: k = 1-6 -> max 1-5M bp
+* Indels: k = 1-4 -> max 50-100,000 bp
+
+To ensure comparability across classes, I will either use fixed-length windows or normalize log-likelihood 
+by sequence length. I will use publicly available genomic annotations from:
+
+* Ensembl or UCSC Genome Browser for:
+  * coding sequences (CDS)
+  * Introns and intergenic regions (noncoding)
+  
+* Eukaryotic Promoter Database (EPD) for:
+  * promoter sequences
+  
+* RepeatMasker annotations for:
+  * Repetitive elements
+  
+* Simulated indel-containing sequences, or real indel regions from 1000 Genomes if feasible
+
+All sources are open-access for academic use
+
+### 3.2 Data Types:
+
+* DNA sequences (ACGT)
+* FASTA or plain text
+* Labeled by region type
+
+### 3.3 Licensing/Access
+All selected datasets are freely available for academic research. No restricted access is required.
+
+### 3.4 Prototype Data Plan:
+For early debugging, I will use small, synthetic sequences ranging from 200-500bp with known patterns:
+
+* Synthetic coding sequences with enforced 3-mer periodicity
+* Synthetic promoters with embedded motifs
+* Artificially generated repeats
+* Simulated indels
+
+This allows me to test:
+* kmer counting
+* Probability estimation
+* Smoothing
+* Log-likelihood scoring
+* Classification logic
+
+Once the pipeline works, I will scale to real genomic data
+
+## Success Criteria
+### 4.1 Expected Outputs:
+
+* A set of trained Markov models for each class and each order k
+* Classification accuracy curves as a function of k. I expect
+  accuracy to increase with k up to a point, then plateau or
+  decrease due to overfitting
+* Confusion matrices showing which classes require more memory
+* A written analysis explaining biological vs. algorithmic
+  patterns
+  
+### 4.2 Reasonableness Checks:
+I will validate results using known biological expectations:
+
+* Coding regions should become distinguishable at low k (2-3) due
+  to codon structure
+* Promoters should require higher k because motifs are longer
+* Repeats should be easy to classify even at low k
+* Synthetic data provides grounding for initial validation
+
+If results contradict well-established biological patterns, this would signal a bug or mis-specification
+
+## Pitfall Scan
+### 5.1 Data-Related Pitfalls:
+1. Biased or inconsistent annotations
+  Promoter boundaries vary across databases- coding regions may
+  include UTRs if not filtered properly.
+  **Mitigation**: Use well-curated sources (EPD, Ensembl) and 
+                  explicitly filter for CDS only
+2. Unequal sequence lengths
+   Likelihoods scale with sequence length
+   **Mitigation**: Normalize by length or use fixed-length windows
+   
+3. Class Imbalance
+   Repeats are abundant, promoters are rare
+   **Mitigation**: Downsample repeats or use balanced test sets
+   
+### 5.2 Algorithmic Pitfalls:
+1. High-order Markov models explode in size-> A k-order model has
+   4^k states, for k> 8 this becomes infeasible and most states
+   have almost no data supporting them
+   **Mitigation**: Cap k at 6-8, drop extremely rare kmers from
+                   model or collapse it into a fallback state.
+                   This keeps the model from becoming too large 
+                   and reduces overfitting
+  
+2. Zero-probability transitions
+   Unseen kmers cause log-likelihood to collapse-> A Markov model 
+   estimates: P(xi | x(i-k:i-1)) but if the prefix never appears
+   in training, the model thinks: P(xi |unseen prefix) = 0, and 
+   log-likelihood becomes log(0) = -inf, so the entire sequence 
+   gets a likelihood of zero. This is catastrophic because one 
+   unseen kmer ruins the whole score, high-order models will 
+   ALWAYS encounter unseen kmers
+   **Mitigation**: Add a small constant to every count (ie, 1):
+                   count(kmer) <-count(kmer) + 1
+                   This ensures no probability is ever zero,
+                   log-likelihood doesn't collapse, unseen kmers
+                   get tiny but nonzero probability
+   
+3. Overfitting at high k
+   High-order models memorize training sequences
+   **Mitigation**: Evaluate on held-out sequences, compare 
+                   training vs. test likelihoods
+                   
+### 5.3 Evaluation Pitfalls:
+1. Misleading accuracy metrics
+   If repeats dominate (extremely predictable -> low entropy) the
+   dataset, then a classifier can get a very high accuracy score 
+   even if cannot distinguish anything but repeats.
+   **Mitigation**: Use per-class accuracy and confusion matrices
+   
+2. No clean data for indels
+   Real indel regions may not be cleanly annotated
+   **Mitigation**: Use simulated indels for controlled evaluation
+                   or drop indels from investigation
+                   
+
+## Planned Repository Structure (Initial Sketch)
+project-root/
+│
+├── PROPOSAL.md
+├── data/
+│   ├── prototype/
+│   └── real/
+│
+├── src/
+│   ├── markov_model.py
+│   ├── train_models.py
+│   ├── classify.py
+│   └── utils.py
+│
+├── notebooks/
+│   ├── exploratory.ipynb
+│   └── evaluation.ipynb
+│
+├── results/
+│   ├── accuracy_curves/
+│   ├── confusion_matrices/
+│   └── logs/
+│
+└── README.md
+
+## Generative AI Disclosure
+I used Microsoft Copilot to determine whether the project was feasible and novel. All 
+scientific decisions, dataset choices, and algorithmic plans were made by me.
+
+Prompts: 
+* "Is it feasible to train multiple k-order Markov models on genomic sequence classes within a 
+   semester-long project?"
+* "What are the computational limits of high-order Markov chains when applied to DNA sequences?"
+* "Would a memory-capacity analysis of Markov chains be reasonable with publicly available genomic data?"
+* "How large does a dataset need to be to reliably estimate kmer transition probabilities for different 
+   sequence features?"

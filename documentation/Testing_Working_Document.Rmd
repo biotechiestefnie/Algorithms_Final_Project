@@ -1,0 +1,18 @@
+---
+title: "Testing_Working_Document"
+author: "Stefanie Moreno"
+date: "2026-04-11"
+output:
+  md_document:
+    variant: gfm
+---
+
+# Testing the Model
+
+
+5.	Evidence of Correctness
+o	Include at least one of the following (more is better):
+o	Automated tests (e.g., in a tests/ directory) with a brief description in the README or a TESTING.md file.
+o	Comparison to a baseline or known result (e.g., comparison to a standard tool on a small dataset).
+o	Clear sanity checks or invariants that your algorithm satisfies (and documentation of how you checked them).
+o	You do not need a perfect benchmark, but you must show that you thought carefully about how to evaluate correctness.

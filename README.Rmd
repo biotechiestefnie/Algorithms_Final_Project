@@ -1,0 +1,40 @@
+---
+title: "README with QuickStart Guide"
+author: "Stefanie Moreno"
+date: "2026-04-15"
+output:
+  md_document:
+    variant: gfm
+---
+
+
+Algorithms Final Project
+========================
+Project Title: 
+The Memoization Goldilocks Zone: Investigating Hyperparameter Boundaries in Markov Models for Classifying Structural Features in the Human Genome
+
+**Research Question:**
+
+How much Markov “memory” is required for a model to faithfully distinguish among promoters, coding regions (exons), noncoding regions (introns), and repetitive elements in the human genome? Understanding the relationship between structural signal complexity and Markov memory is both biologically meaningful and algorithmically valuable. By systematically varying the Markov order, we can gain insight into:
+
+- How easily different genomic features can be detected using sequence‑based statistical models
+
+- Where the model begins to break down for each structural class
+
+- How increasing memoization influences overfitting versus overgeneralization
+
+- Which biological signals are inherently local and which require long‑range contextual information
+
+A structural class is local if the information needed for recognition is contained in short, contiguous patterns — the kind of signal a low‑order Markov chain (small 𝑘) can reliably capture. In contrast, a class is long‑range if its defining features are dispersed or extend beyond a few nucleotides, requiring higher Markov memory (larger 𝑘) for accurate discrimination.
+
+
+**Algorithm:**
+
+The successful completiorrr\  rn of numerous genome sequencing projects, paired with considerable advancements in Next Generation Sequencing (NGS) technologies, has generated an unprecedented wealth of genomic data, providing a rich substrate for scientific advancements among the omics disciplines. Markov chains form a fundamental class of probabilistic models that have become indispensible tools for investigating a wide range of biological unknowns, from gene prediction to protein structual analysis. These models are underpinned by a robust mathematical framework that can be exploited to capture the dynamic dependencies between adjacent nucleotides while simultaneously simulating their structural characteristics (Ma et al., 2025), making them inherently well-suited for extracting meaningful insights from complex sequence datasets.
+
+A key consideration of Markov applications is the Markov property, which asserts that the next state depends only on a limited number of previous states. While this assumption greatly simplifies computational complexity, it also imposes a “memoryless” constraint that is excessively limiting for investigating biological sequences, which contain countless motifs, periodicities, and regulatory signals, many extending well beyond a single nucleotide of context (Ryabco & Usotskaya, 2008). To address this limitation, higher‑order Markov models incorporate a longer history by conditioning on the previous k nucleotides. And while increasing k allows the model to uncover richer local dependencies and more biologically meaningful patterns, it also expands the state space exponentially (4^k), requiring substantially more data to estimate accurate transition probabilities in addition to an ultimately unrealistic computational investment (Burkes & Azad, 2020).
+
+This trade‑off between contextual richness and data sparsity makes the choice of k a critical strategic decision. If k is too small, the model fails to capture important structural features; if k is too large, the model becomes unstable, overfits, or collapses due to insufficient observations. Understanding how Markov memory interacts with the complexity of biological signals is therefore essential for determining when these models are applicable, where they break down, and how much context is required for reliable structural discrimination in the genome.
+
+For this study, I implement deterministic k‑order Markov chains as a multi‑class generative classifier, training a separate model for each genomic feature. In this formulation, nucleotides constitute the basic alphabet, and the effective states of a k‑order model correspond to all possible k‑mers. Each model learns the class‑specific transition probabilities governing how nucleotides follow one another within these k‑mer contexts across increasing values of k. Each model estimates the likelihood of a sequence by evaluating the conditional probability of a nucleotide given the previous k nucleotides and accumulating these probabilities in log space. By systematically increasing the Markov order and evaluating classification performance across promoters, introns, exons, and repeats, the study directly measures how much contextual memory is required for faithful recognition and identifies the precise moment at which the models begin to fail and why. These insights can help pave the way for more successful future applications of Markov models in genomics, informing the design of more sophisticated models that balance context and complexity.
+
