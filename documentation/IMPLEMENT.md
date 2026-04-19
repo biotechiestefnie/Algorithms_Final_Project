@@ -51,22 +51,23 @@
 **Files:**
 
 - docs/
-  - IMPLEMENTATION.md -\> Prototype data implementation, initial
-    evaluation, and parameter optimizations/model adjustments
-  - Implementation_Progress_Report.Rmd -\> This file, working document
-    for IMPLEMENTATION.md
-  - README.md -\> Project overview, dependencies, and instructions for
-    running code and reproducing results
-  - PROPOSAL.md -\> Research question, justifications, and experimental
-    design
-  - Proposal.nb.html -\> Working document for PROPOSAL.md
-  - CONCEPT.md -\> Conceptual Progress Report including program
-    pseudocode, assumptions, and mitigation strategies
-  - Conceptual_Progress_Report.md -\> Working document for CONCEPT.md
-  - REFERENCES.md -\> Annotated bibliography and reference literature
-    supporting the conceptual framework of project
-  - REQUIREMENTS.txt -\> Python package requirements and versions
+    - IMPLEMENTATION.md -\> Prototype data implementation, initial
+      evaluation, and parameter optimizations/model adjustments
+    - Implementation_Progress_Report.Rmd -\> This file, working document
+      for IMPLEMENTATION.md
+    - README.md -\> Project overview, dependencies, and instructions for
+      running code and reproducing results
+    - PROPOSAL.md -\> Research question, justifications, and experimental
+      design
+    - Proposal.nb.html -\> Working document for PROPOSAL.md
+    - CONCEPT.md -\> Conceptual Progress Report including program
+      pseudocode, assumptions, and mitigation strategies
+    - Conceptual_Progress_Report.md -\> Working document for CONCEPT.md
+    - REFERENCES.md -\> Annotated bibliography and reference literature
+      supporting the conceptual framework of project
+    - REQUIREMENTS.txt -\> Python package requirements and versions
     required to run all code
+  
 - data/
   - raw/
     - GRCh37.p13.genome.fa -\> Full GRCh37.p13 reference genome FASTA
@@ -477,9 +478,18 @@ prototype_run.ipynb, which imports the core modules from the src/
 directory. The notebook expects pre‑generated prototype datasets located
 in data/prototype/, including:
 
+** preliminary run:    
+
     * positive_promoters.fa
     * negative_promoters.fa
+    
+======================================================                      
 
+** full prototype run:
+
+    * positive_promoters.fa
+    * negative_promoters.fa
+    
     * positive_introns.fa
     * negative_introns.fa
 
@@ -489,21 +499,54 @@ in data/prototype/, including:
      * positive_repeats.fa
      * negative_repeats.fa
 
-Running the implementation notebooks trains preliminary Markov models
-for each structural class, classifies all prototype sequences, computes
-accuracy‑vs‑k metrics, and writes output files to the results/ directory
-under the prototype/ subfolders as files for the positive and negative
-test results for each structural class.
+For the preliminary prototype run, I have only defined in the implementation
+notebook the paths to the promoter prototype datasets, which is the most 
+biologically well-balanced class. This mini-run is only intended to demonstrate 
+end-to-end execution of the model pipeline. Once I have confirmed successful
+implementation, I will define all prototype datasets and execute the full 
+prototype run for all four classes, adjusting parameters and modifying my scripts
+as needed based on how successful the model is in classifying each feature 
+across a range of k values.
 
-*Console Output Snippet:*
+The full protoype implementation will load the eight prototype datasets into the program,
+running the same sequences on both training and the model for classification. Accuracy‑vs‑k 
+metrics will be calculated and output files containing the classifications and
+statistics will be written to the results/ directory under the prototype/ subfolders. 
+Important to note is that in the Prototype Run, the training data is the test data, so 
+identical data is being applied to both train and the model. The preliminary run is strictly
+for testing execution.
 
-    Loaded 300 prototype sequences across 4 classes
-    Training Markov models... done
-    Classifying sequences... done
-    Writing results to results/prototype/positive_promoters complete
-    Prototype accuracy at k=1: 0.41
+*Sample Snippet of Console Output:*
+I have prepared a script called src/terminal_updates.py to print informative updates 
+to the console during execution, which is imported and called at key steps in the 
+prototype_run.ipynb notebook. This allows for real-time feedback on the progress 
+of the model pipeline, including data loading, model training, classification, and 
+results output. This will assist me in the debugging process should I encounter an 
+error, because I will be able to identify exactly where the program broke and which 
+step is causing the issue. It also provides a clear narrative of the execution flow, 
+which can be helpful for interpreting results and understanding how the model is 
+progressing through each stage of the pipeline. The following is a snippet of the 
+console output from the preliminary prototype run:
 
-*Snippet of Output in Implementation Notebook (Jupyter):*
+```
+Loaded 600 prototype sequences: 
+300 positive and 300 negative promoters
+Training Markov models... done
+Classifying sequences... done
+Writing results to results/accuracy_curves/prototype complete
+Writing results to results/prototype/confusion_matrices/prototype complete
+Writing results to results/prototype/logs/prototype complete
+Writing results to results/prototype/per_sequence_classification/prototype complete
+Writing results to results/prototype/summary_stats/prototype complete
+Prototype accuracy at k=1: 0.41
+```
+
+
+*Sample Snippet of Output in Implementation Notebook (Jupyter):*
+The following example was retrieved directly from the prototype implementation notebook,
+prototype_run.ipynb, and demonstrates the output of the first few sequences in the loaded 
+prototype promoter dataset, which was printed for verification after training the data. This 
+output confirms that the sequences were mapping correctly to 
 
     {1: [('TCACTGCAACCTCCGCCTCCTGGGTTCAAGTGATTTCCAGCTAATTTTTGTATTTTTAGTAGAGATGGGGTTTCACCATGTTGGCCAGGCTGGTCTTGAACTCCTGACCTCAAGTGATCCGCCCACTTCGGCCTCCCAAAGTGCTAGGATTACAGACATGAGTCACCACACCCAGACCCCAAAATAGGATTTTCTTAAAGAGCGCTCAGCTTAATTAAAAGTGGATATCTGGGGGGCTGGCACGCGGCAGCGTTGCGGGTGGGAGCGGCTGCAACTCTGGTGCCTGAGGAGCGATACCAAGAGAAATCATCACCCACAATTGGGCCAGTGCAGCAATCAGATTGGGTTCGAGTTCTGGAAACAGCTGTGCACTGAGCATGGTATCAGCCCCAAGGGCACCATGGAGGAGTTCGCTACTGAGGGCACTGACCACAAGGACATCTTTTTCTACCAGGCAGACGATGAGCACTACATCCCCCGGGCTGTGCTGCTGGACCTGGA',
        None,

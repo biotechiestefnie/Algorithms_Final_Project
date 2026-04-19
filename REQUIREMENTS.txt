@@ -97,3 +97,4 @@ python-json-logger~=4.1.0
 prometheus_client~=0.25.0
 jupyter_server_terminals~=0.5.4
 requests~=2.33.1
+seqtk~=0.5.0

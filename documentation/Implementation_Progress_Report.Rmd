@@ -30,6 +30,7 @@ https://github.com/biotechiestefnie/Algorithms_Final_Project.git
 * src/ 
 * tests/ 
 * results/
+* notebooks/
 
 **Second- and Third-Level Directories:**
 
@@ -68,126 +69,140 @@ https://github.com/biotechiestefnie/Algorithms_Final_Project.git
 **Files:**
 
 
-* docs/
-    * IMPLEMENTATION.md -> Prototype data implementation, initial evaluation, and
-                           parameter optimizations/model
-                           adjustments
-    * Implementation_Progress_Report.Rmd -> This file, working document for
-                                            IMPLEMENTATION.md
-    * README.md -> Project overview, dependencies, and instructions for running code and reproducing results
-    * PROPOSAL.md -> Research question, justifications, and experimental design
-    * Proposal.nb.html -> Working document for PROPOSAL.md
-    * CONCEPT.md -> Conceptual Progress Report including program pseudocode, assumptions, and mitigation 
-                    strategies
-    * Conceptual_Progress_Report.md -> Working document for CONCEPT.md
-    * REFERENCES.md -> Annotated bibliography and reference literature supporting the conceptual framework of
-                       project
-    * REQUIREMENTS.txt -> Python package requirements and versions required to run all code
+**docs/**
+    - IMPLEMENTATION.md -> Prototype data implementation, initial evaluation, and parameter
+      optimizations/model adjustments; rendered from Implementation_Progress_Report.Rmd
+      
+    - Implementation_Progress_Report.Rmd -> This file, working document for IMPLEMENTATION.md
+    
+    - README.md -> Project overview, dependencies, and instructions for running code and reproducing
+      results
+      
+    - PROPOSAL.md -> Research question, justifications, and experimental design
+    
+    - Proposal.nb.html -> Working document for PROPOSAL.md
+    
+    - CONCEPT.md -> Conceptual Progress Report including program pseudocode, assumptions, and mitigation 
+      strategies
+      
+    - Conceptual_Progress_Report.md -> Working document for CONCEPT.md
+    
+    - REFERENCES.md -> Annotated bibliography and reference literature supporting the conceptual
+      framework of project
+      
+    - REQUIREMENTS.txt -> Python package requirements and versions required to run all scripts
   
   
-* data/
-    * raw/
-        * GRCh37.p13.genome.fa -> Full GRCh37.p13 reference genome FASTA file used by gffread to retrieve
-                                  nucleotide sequences for all exon and intron intervals; sourced from GENCODE
-                                  (UCSC) GRCh37/hg19 release
-        * gencode.v19.annotation.gtf -> UCSC v19 gene annotation file containing genomic coordinates and transcript
-                                        structures for GRCh37.p13 reference genome, from which exon boundaries and
-                                        intron intervals are defined; sourced from GENCODE
-        * promoters_raw.fa -> FASTA file containing 1,796 raw promoter sequences downloaded from EPDnew database, 
-                              accessed via UCSC Genome Browser. Each sequence is centered on Pol II transcription
-                              start site (TSS), experimentally validated by CAGE/RAMPAGE high-precision mapping.
-                              Elected parameters included Sequence Extraction Window from -250 to 250bp and set to
-                              "retrieve a representative set of non-closely related sequences"
-        * introns_raw.fa -> FASTA file of 1,081,868 raw intron sequences extracted from GRCh37.p13.genome.fa using
-                            gffread, a command line application. Intron intervals inferred from exon mapping
-                            coordinates located in gencode.v19.annotation.gtf  
-        * exons_raw.fa -> FASTA file of 104,142 raw exon sequences retrieved from GRCh37.p13.genome.fa with gffread
-                          at the command line. Exon boundaries determined by mapping coordinates accessed from
-                          gencode.v19.annotation.gtf
-        * repeats_raw.fa -> FASTA file containing 3,861 distinct repeat region sequences accessed directly from
-                            UCSC Genome Browser’s RepeatMasker track for GRCh37/hg19 assembly
+**data/**
+  raw/
+    - GRCh37.p13.genome.fa -> Full GRCh37.p13 reference genome FASTA file used by gffread to retrieve
+      nucleotide sequences for all exon and intron intervals; sourced from GENCODE (UCSC) GRCh37/hg19
+      assembly
+      
+    - gencode.v19.annotation.gtf -> UCSC v19 gene annotation file containing genomic coordinates and
+      transcript structures for GRCh37.p13 reference genome, from which exon boundaries and intron
+      intervals are defined; sourced from GENCODE
+      
+    - promoters_raw.fa -> FASTA file containing 1,796 raw promoter sequences downloaded from EPDnew
+      database, accessed via UCSC Genome Browser. Each sequence is centered on Pol II transcription
+      start site (TSS), experimentally validated by CAGE/RAMPAGE high-precision mapping. Elected
+      parameters included Sequence Extraction Window from -250 to 250bp and set to "retrieve a
+      representative set of non-closely related sequences"
+        
+    - introns_raw.fa -> FASTA file of 1,081,868 raw intron sequences extracted from GRCh37.p13.genome.fa
+      using gffread, a command line application. Intron intervals inferred from exon mapping
+      coordinates located in gencode.v19.annotation.gtf
+      
+    - exons_raw.fa -> FASTA file of 104,142 raw exon sequences retrieved from GRCh37.p13.genome.fa
+      with gffread at the command line. Exon boundaries determined by mapping coordinates accessed from
+      gencode.v19.annotation.gtf
+      
+    - repeats_raw.fa -> FASTA file containing 3,861 distinct repeat region sequences accessed directly
+      from UCSC Genome Browser’s RepeatMasker track for GRCh37/hg19 assembly
                       
 **NOTE:** During intron/exon extraction with gffread at the command line, file GRCh37.p13.genome.fa.fai was autopopulated into the raw/ directory. This indexing file is essential for efficient coordinate-based access of specified genomic regions, enabling precise sequence retrieval as defined by annotation file gencode.v19.annotation.gtf. However, it is a runtime artifact that is regenerated as needed by sequence extraction tools such as gffread, and does not contain any data relevant to this study. Therefore, the file has been removed from the raw/ directory to maintain a clean data repository, and documented here to acknowledge its existence, use, and accessibility
     
     
-    * prototype/
-        * promoters_positive.fa -> FASTA file of 300–501 bp promoter sequences randomly sampled from Python
-                                   dictionary generated by data_preparation.py program, which parsed and accessed
-                                   raw promoter data from Pol II TSS in promoters_raw.fa
-        * promoters_negative.fa -> FASTA file of 300–501 bp promoter sequences randomly sampled from Python
-                                   dictionary built with promoters_raw.fa. Negative sequences selected only after
-                                   removing all entries sampled for positive set, ensuring unique sequences
-        * introns_positive.fa -> FASTA file of 300 intron sequences ranging in length from 524 to 319,058bp;
-                                 randomly sampled from length-filtered Python dictionary generated during data
-                                 preparation from raw data stored in introns_raw.fa 
-        * introns_negative.fa -> FASTA file of 300 intron control sequences ranging in length from 500 to
-                                 120,440bp; randomly sampled from length-filtered Python dictionary after removing
-                                 all entries in positive set.Dictionary data extracted from introns_raw.fa.
-                                 Sequences underwent dinucleotide shuffling to generate control sequences with
-                                 predictable behavior for lower orders of k
-        * exons_positive.fa -> FASTA file of 300 exon sequences ranging in length from 153 to 9,156bp; randomly
-                               sampled and length-filtered from Python dictionary generated during data
-                               preparation. Dictionary data extracted from raw_exons.fa
-        * exons_negative.fa -> FASTA file of 300 exon control sequences ranging in length from 153 to 81,357 bp;
-                               randomly sampled from length‑filtered Python dictionary after removing all entries
-                               used for positive set. Dictionary data extracted from exons_raw.fa. Sequences
-                               underwent dinucleotide shuffling to disrupt exon‑specific signal while preserving
-                               overall nucleotide composition, producing control sequences with predictable
-                               behavior for lower k values
-        * repeats_positive.fa -> FASTA file of 300 repeat region sequences ranging in length from 6 to 5,627bp;
-                                 randomly sampled from Python dictionary generated during data prep from
-                                 raw_repeats.fa. Sequences not length filtered to prevent biasing the dataset
-                                 against shorter repeat regions, which are common in the genome and may have
-                                 distinct sequence properties relevant to classification
-        * repeats_negative.fa -> FASTA file of 300 repeat region control sequences ranging in length from 6 to
-                                 7,448bp; randomly sampled from Python dictionary after removing all entries
-                                 sampled for positive set. Dictionary data extracted from raw_repeats.fa. Sequences
-                                 underwent dinucleotide shuffling to generate control sequences with predictable
-                                 behavior for lower k values
-        * preliminary_prototype_properties.csv -> CSV file summarizing key preliminary properties of prototype
-                                                  datasets for each structural class (promoters, introns, exons,
-                                                  repeats). Includes mean, median, minimum & maximum lengths,
-                                                  counts, standard deviation, interquartile range, coefficient of 
-                                                  variation, and base composition (%), including GC content. This
-                                                  file serves as a reference for understanding the characteristics 
-                                                  of the prototype datasets and informs expectations for algorithm
-                                                  performance with these sequences
+prototype/
+    - promoters_positive.fa -> FASTA file of 300–501 bp promoter sequences randomly sampled from Python
+      dictionary generated by data_preparation.py program, which parsed and accessed raw promoter data
+      from Pol II TSS in promoters_raw.fa
+    
+    - promoters_negative.fa -> FASTA file of 300–501 bp promoter sequences randomly sampled from Python
+      dictionary built with promoters_raw.fa. Negative sequences selected only after removing all entries       sampled for positive set, ensuring unique sequences
+        
+    - introns_positive.fa -> FASTA file of 300 intron sequences ranging in length from 524 to 319,058bp;
+      randomly sampled from length-filtered Python dictionary generated during data preparation from raw
+      data stored in introns_raw.fa
+      
+    - introns_negative.fa -> FASTA file of 300 intron control sequences ranging in length from 500 to
+      120,440bp; randomly sampled from length-filtered Python dictionary after removing all entries in
+      positive set. Dictionary data extracted from introns_raw.fa; sequences underwent dinucleotide
+      shuffling to generate control sequences with predictable behavior for lower orders of k
+    
+    - exons_positive.fa -> FASTA file of 300 exon sequences ranging in length from 153 to 9,156bp;
+      randomly sampled and length-filtered from Python dictionary generated during data preparation.
+      Dictionary data extracted from raw_exons.fa
+    
+    - exons_negative.fa -> FASTA file of 300 exon control sequences ranging in length from 153 to 81,357
+      bp; randomly sampled from length‑filtered Python dictionary after removing all entries used for
+      positive set. Dictionary data extracted from exons_raw.fa. Sequences underwent dinucleotide
+      shuffling to disrupt exon‑specific signal while preserving overall nucleotide composition,
+      producing control sequences with predictable behavior for lower k values
+    
+    - repeats_positive.fa -> FASTA file of 300 repeat region sequences ranging in length from 6 to
+      5,627bp; randomly sampled from Python dictionary generated during data prep from raw_repeats.fa.
+      Sequences not length filtered to prevent biasing the dataset against shorter repeat regions, which
+      are common in the genome and may have distinct sequence properties relevant to classification
+    
+    - repeats_negative.fa -> FASTA file of 300 repeat region control sequences ranging in length from 6
+      to 7,448bp; randomly sampled from Python dictionary after removing all entries sampled for positive
+      set. Dictionary data extracted from raw_repeats.fa. Sequences underwent dinucleotide shuffling to
+      generate control sequences with predictable behavior for lower k values
+    
+    - preliminary_prototype_properties.csv -> CSV file summarizing key preliminary properties of
+      prototype datasets for each structural class (promoters, introns, exons, repeats). Includes mean,
+      median, minimum & maximum lengths, counts, standard deviation, interquartile range, coefficient of 
+      variation, and base composition (%), including GC content. This file serves as a reference for
+      understanding the characteristics of the prototype datasets and informs expectations for algorithm
+      performance with these sequences
   
   
-    * training/ (Training datasets for final model development and optimization)
-        These files have not yet been created as I am still assessing and fine-tuning optimal data filters,
-        training for varying k values, and evaluating preliminary results from the prototype run. Once I have
-        established a robust data preparation pipeline and have a clearer understanding of how the algorithm
-        performs on the prototype data, I will generate larger training datasets for each structural class
-        (promoters, introns, exons, repeats) that are suitable for comprehensive model development and optimization
-        across different k values and class characteristics
+**training/** (Training datasets for final model development and optimization)
+These files have not yet been created as I am still assessing and fine-tuning optimal data filters,
+training for varying k values, and evaluating preliminary results from the prototype run. Once I have
+established a robust data preparation pipeline and have a clearer understanding of how the algorithm
+performs on the prototype data, I will generate larger training datasets for each structural class
+(promoters, introns, exons, repeats) that are suitable for comprehensive model development and optimization across different k values and class characteristics
   
-    * test/ (Test datasets for final Markov model testing and validation)
-        These files have not yet been created as I am still assessing and fine-tuning optimal data filters,
-        training for varying k values, and evaluating preliminary results on the prototype datasets. Once I have
-        established a robust data preparation pipeline and have a clearer understanding of how the algorithm
-        performs on the prototype data, I will generate larger test datasets for each structural class (promoters,
-        introns, exons, repeats) that are suitable for more comprehensive testing and validation of the algorithm's
-        performance across different k values and class characteristics 
+**test/** (Test datasets for final Markov model testing and validation)
+These files have not yet been created as I am still assessing and fine-tuning optimal data filters,
+training for varying k values, and evaluating preliminary results on the prototype datasets. Once I have
+established a robust data preparation pipeline and have a clearer understanding of how the algorithm
+performs on the prototype data, I will generate larger test datasets for each structural class (promoters, introns, exons, repeats) that are suitable for more comprehensive testing and validation of the algorithm's performance across different k values and class characteristics 
         
     
-* src/ (Implementation script, data preparation script, and additional helper scripts for command‑line execution)
-    * __init__.py -> Package marker file to indicate that src/ is a Python package, allowing for modular code
-                     organization and imports across different scripts within the source directory
-    * analyze_data.py -> Provides all evaluation‑stage functionality, including sequence classification, accuracy
-                         metrics, confusion matrices per k, and advanced model performance analysis
-    * data_preparation.py -> Python script that parses raw FASTA files for promoters, introns, exons, and repeats,
-                             applies necessary filtering criteria (e.g., length thresholds, quality checks) to
-                             generate prototype datasets by randomly sampling sequences for positive and negative
-                             sets. This script also includes functions for dinucleotide shuffling to create control
-                             sequences, and outputs preliminary summary statistics of the generated datasets
-    * extract_introns.py -> Executable to extract intron/exon sequences from a GENCODE GTF and matching genome
-                            FASTA file with gffread, a command line extraction application. This script defines
-                            intron intervals based on exon mapping coordinates from both GTF annotation file and
-                            auto-populated GRCh37.p13.genome.fa.fai file, and retrieves corresponding nucleotide
-                            sequences from the genome FASTA file, outputting them into separate class-based FASTA
-                            files to supply raw data for intron/exon classes in the study
-    * data_loading.py -> Input module containing functions to load FASTA files into Python data structures for
+**src/** (Implementation, data preparation, and additional helper scripts for command‑line execution)
+  - __init__.py -> Package marker file to indicate that src/ is a Python package, allowing for modular
+    code organization and imports across different scripts within the source directory
+    
+  - analyze_data.py -> Provides all evaluation‑stage functionality, including sequence classification,
+    accuracy metrics, confusion matrices per k, and advanced model performance analysis
+    
+  - data_preparation.py -> Python script that parses raw FASTA files for promoters, introns, exons, and
+    repeats, applies necessary filtering criteria (e.g., length thresholds, quality checks) to
+    generate prototype datasets by randomly sampling sequences for positive and negative sets. This
+    script also includes functions for dinucleotide shuffling to create control sequences, and outputs
+    preliminary summary statistics of the generated datasets
+    
+  - extract_introns.py -> Executable to extract intron/exon sequences from a GENCODE GTF and matching
+    genome FASTA file with gffread, a command line extraction application. This script defines intron
+    intervals based on exon mapping coordinates from both GTF annotation file and auto-populated
+    GRCh37.p13.genome.fa.fai file, and retrieves corresponding nucleotide sequences from the genome FASTA
+    file, outputting them into separate class-based FASTA files to supply raw data for intron/exon
+    classes in the study
+  
+  - data_loading.py -> Input module containing functions to load FASTA files into Python data structures for
                          model training and evaluation for each data class (promoters, introns, exons, repeats)
     * markov_model.py -> Implementation module that defines the k-order Markov model algorithm for genomic sequence
                          classification: counts all kmers in a seq, estimates transition probs by appliying LaPlace
@@ -413,6 +428,19 @@ Now that the root is set to the working directory and src/ has been added to the
 
 In this cell, I define a dictionary containing the paths to each genomic class's positive and negative prototype FASTA datasets as the value, along with the key designating the class and label (positive or negative). This dictionary acts as a routing map for the pipeline to know how to locate the files without having them hardcoded into the data loading module. This design choice allows for greater flexibility and modularity, as the data loading functions can simply reference this dictionary to access the correct files for each class and label, without needing to know the specific file paths. It also centralizes the file path definitions in one place, making it easier to update or modify the dataset locations in the future without having to change multiple parts of the codebase.
 
+For the Prototype run, the paths point to the prototype datasets located in data/prototype/, which were generated by the data preparation script and documented in the previous section. These files contain 600 sequences total for the positive and negative set of promoters, with a uniform total bp length of 501.
+
+
+### 4. Define Prototype FASTA Paths to Train and Test Model
+In this cell, I define a dictionary containing the paths to each genomic class's positive and negative prototype FASTA datasets as the value, along with the key designating the class and label (positive or negative). This dictionary acts as a routing map for the pipeline to know how to locate the files without having them hardcoded into the data loading module. This design choice allows for greater flexibility and modularity, as the data loading functions can simply reference this dictionary to access the correct files for each class and label, without needing to know the specific file paths. It also centralizes the file path definitions in one place, making it easier to update or modify the dataset locations in the future without having to change multiple parts of the codebase.
+
+For the very first run, I am working only with the prototype promoter positive and negative data to see what my end to end looks like, which constitutes a total of 600-501bp sequences. It is important to note that the same data is being run to train and test the model. This is because the Prototype run is not for evaluating results, but rather, the pipeline, model interactions, model structure, output writing, classification loop, and directory structure.
+
+
+
+
+
+
 *Cell 5: Load Prototype Data*
 
 ### Data Documentation
@@ -429,7 +457,9 @@ Upon attempting to obtain the raw data for the intron and exon classes, I discov
 
 To extract raw exon and intron FASTA files from the GENCODE GTF and the GRCh37.p13 genome FASTA, I used the gffread application from the command line of my local system. I created a dedicated micromamba environment containing only gffread and its minimal dependencies to ensure a clean, reproducible environment isolated from other tools on the system. All intron and exon raw sequence extraction occurred outside the Python codebase, and the resulting FASTA files were moved into the project’s data/raw directory for downstream processing. This separation ensured that the Python pipeline remained lightweight and environment agnostic, while the specialized sequence extraction step was handled in a controlled, single purpose environment.
 
-3861 Raw repeat sequences were obtained directly from UCSC’s RepeatMasker track for the hg19/GRCh37 assembly, ensuring that all four structural classes in the study were sourced from a single, assembly‑consistent reference. UCSC provides pre‑extracted RepeatMasker FASTA files that include the full spectrum of annotated repetitive elements—LINEs, SINEs, LTR retrotransposons, DNA transposons, simple repeats, and low‑complexity regions—allowing the complete repeat landscape to be incorporated without subtype filtering or coordinate‑level processing. To maintain strict consistency across datatypes, I downloaded the hg19 RepeatMasker FASTA exactly as provided by UCSC and placed it directly into the project’s data/raw directory with no additional preprocessing, masking, or length‑based exclusion. This ensured that the repeat dataset reflected the same genome assembly, annotation conventions, and sequence formatting as the promoter, exon, and intron sources, preventing methodological drift and guaranteeing that downstream comparisons and classifier behavior would reflect true biological differences rather than inconsistencies in data acquisition or parameter settings.
+3861 Raw repeat sequences were obtained directly from UCSC’s RepeatMasker track for the hg19/GRCh37 assembly, ensuring that all four structural classes in the study were sourced from a single, assembly‑consistent reference.  UCSC provides pre‑extracted RepeatMasker FASTA files that include the full spectrum of annotated repetitive elements—LINEs, SINEs, LTR retrotransposons, DNA transposons, simple repeats, and low‑complexity regions—allowing the complete repeat landscape to be incorporated without subtype filtering or coordinate‑level processing. 
+
+Parameters were set to include no additional bases either uptream or downstream from the sequences, and to return only uppercase values.To maintain strict consistency across datatypes, I downloaded the hg19 RepeatMasker FASTA exactly as provided by UCSC and placed it directly into the project’s data/raw directory with no additional preprocessing, masking, or length‑based exclusion. This ensured that the repeat dataset reflected the same genome assembly, annotation conventions, and sequence formatting as the promoter, exon, and intron sources, preventing methodological drift and guaranteeing that downstream comparisons and classifier behavior would reflect true biological differences rather than inconsistencies in data acquisition or parameter settings.
 
 
 **Preprocessing Steps:**
@@ -496,6 +526,8 @@ Ost, G. & Takahashi, D. Y. (2023). Sparse Markov models for high dimensional inf
 
 Pertea, G. & Pertea, M. (2020). GFF Utilities: GffRead and GffCompare. *F1000Research,* 9(304): 1-13. https://doi.org/10.12688/f1000research.23297.1.
 
+Pokrzywa, R. (2009). Application of the Burrows-Wheeler Transform for searching for tandem repeats in DNA sequences. *Int J Bioinform Res Appl.,* 5(4): 432-46. https://doi.org/10.1504/IJBRA.2009.027517
+
 Ramos, R. T., Carneiro, A. R., Baumbach, J., Azevedo, V., Schneider, M. P., & Silva, A. (2011). Analysis of quality raw data of second generation sequencers with Quality Assessment Software. *BMC Res Notes,* 4:130. https://doi.org/10.1186/1756-0500-4-130
 
 Reitz, k. (2024). The hitchiker's guide to Python. Accessed on Apr2, 2026, from https://docs.python-guide.org
@@ -505,6 +537,8 @@ Ryabko, B. & Usotskaya, N. (2008). DNA-sequence analysis using Markov chain mode
 Sakharkara, M. K., Chowb, T. K. V., & Kangueane, P. (2004). Distributions of exons and introns in the human genome. *In Silico Biol,* 4(0032): 387-393. http://www.bioinfo.de/isb/2004/04/0032/
 
 Wang, J. & Hannenhalli, S. (2005). Generalizations of Markov model to characterize biological sequences. *BMC Bioinformatics,* 6:219. https://doi.org/10.1186/1471-2105-6-219
+
+Won, K. J., Sandelin, A., Marstrand, T. T., & Krogh, A. (2008). Modeling promoter grammars with evolving hidden Markov models. *Bioinformatics,* 24(15):1669-1675. https://doi.org/10.1093/bioinformatics/btn254
 
 Yoon, B. J. (2009). Hidden Markov models and their applications in biological sequence analysis. *Curr Genomics,* 10(6):402-15. https://doi.org/10.2174/138920209789177575
 
