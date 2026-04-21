@@ -9,7 +9,7 @@ These tests verify:
 All tests use small, deterministic sequences to ensure clarity and reproducibility.
 """
 
-from src.markov_model import count_kmers, estimate_transition_probs, log_likelihood
+from src.per_base_likelihood import count_kmers, estimate_transition_probs, per_base_likelihood
 import math
 
 
@@ -88,6 +88,6 @@ def test_log_likelihood_simple_sequence():
     expected_logL = math.log(p_AA) + math.log(p_AC)
 
     # Compute using function
-    computed_logL = log_likelihood(sequence, model, k)
+    computed_logL = per_base_likelihood(sequence, model, k)
 
     assert abs(computed_logL - expected_logL) < 1e-12  # Fallback probability-> epsilon

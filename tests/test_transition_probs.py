@@ -1,4 +1,4 @@
-from src.markov_model import count_kmers, estimate_transition_probs
+from src.per_base_likelihood import count_kmers, estimate_transition_probs
 
 def test_probs_sum_to_one():
     # Extract raw kmer frequency counts

@@ -1,5 +1,5 @@
 # Import module
-from src.markov_model import count_kmers
+from src.per_base_likelihood import count_kmers
 
 def test_k1_simple():
     """

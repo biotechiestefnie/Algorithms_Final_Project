@@ -925,6 +925,10 @@ Gusfield, D. (1997). Algorithms on strings, trees, and sequences:
 Computer science and computational biology. Cambridge University Press.
 <https://www.inf.ufes.br/~berilhes/Cursos/TBO2008-1/gusfield.pdf>
 
+Gustafsson, J., Norberg, P., Qvick-Wester, & Schliep, A. (2021). Fast parallel 
+construction of variable-length Markov chains. *BMC Bioinformatics,* 22(487):
+1-23. https://doi.org/10.1186/s12859-021-04387-y
+
 Hendrix, D. A. (2019). Applied bioinformatics of nucleic acid sequences.
 Creative Commons. Pressbooks.
 <https://open.oregonstate.education/appliedbioinformatics/front-matter/applied-bioinformatics/#front-matter-490-section-1>
