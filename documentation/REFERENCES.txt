@@ -33,3 +33,11 @@ GENCODE Human Release 19 (GRCh37.p13) comprehensive gene annotation (GTF)
 and the corresponding GRCh37.p13 genome FASTA, downloaded from the GENCODE FTP site.
 
 Repeat Motif Data
+
+
+
+
+
+Dawn B. Woodard. Jeffrey S. Rosenthal. "Convergence rate of Markov chain methods 
+for genomic motif discovery." Ann. Statist. 41 (1) 91 - 124, February 2013. 
+https://doi.org/10.1214/12-AOS1075

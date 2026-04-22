@@ -1,9 +1,12 @@
-#!/usr/bin/env python  # Shebang line for command line execution with proper interpreter
+
+
+# Section 1: Imports, Seeds, Global Params
 
 # Import packages and modules
 import os
 from Bio import SeqIO  # For parsing FASTA file
 import random
+import subprocess
 import csv
 import statistics
 from typing import TextIO
@@ -13,6 +16,14 @@ import numpy as np
 random.seed(42)
 np.random.seed(42)
 
+# Set global params
+MIN_EXON_LENGTH = 150
+MIN_INTRON_LENGTH = 500
+MAX_INTRON_LENGTH = 1500
+TRAIN_RATIO = 0.8
+
+
+# Section 2: Shared Functions
 
 # Helper functions
 def infer_dataclass(path: str) -> str:
@@ -143,10 +154,10 @@ def filter_by_length(
     return filtered
 
 
-def sample_positive_fasta(seq_dict, feature, outpath, k=300):
+def sample_fasta(seq_dict, feature, outpath, k=300):
     """
-    Sample k positive sequences from FASTA dictionary and write to new FASTA
-    file for positive prototype data in each class.
+    Sample k sequences from FASTA dictionary and write to new FASTA
+    file for each structural class.
     Parameters:
         seq_dict (dict[str, SeqRecord]): ID → SeqRecord mapping
         feature (str): inferred genomic feature from raw filename
@@ -168,114 +179,6 @@ def sample_positive_fasta(seq_dict, feature, outpath, k=300):
     SeqIO.write(sampled_list, outpath, "fasta")
 
     return sampled_list
-
-
-def remove_sampled_from_dict(seq_dict, sampled_list):
-    """
-    Remove sampled SeqRecord objects from the original FASTA dictionary for positive
-    prototype generation.
-    Parameters:
-        seq_dict (dict[str, SeqRecord]): ID → SeqRecord mapping
-        sampled_list (list[SeqRecord]): sampled SeqRecord objects
-    Returns:
-        dict[str, SeqRecord]: updated dictionary with sampled removed
-    """
-
-    sampled_ids = {rec.id for rec in sampled_list}
-
-    return {seq_id: rec for seq_id, rec in seq_dict.items() if seq_id not in sampled_ids}
-
-
-def sample_negative_candidates(seq_dict_remaining, k=300):
-    """
-    Sample k SeqRecord objects from remaining sequence dictionary for
-    negative prototype data generation
-    Parameters:
-        seq_dict_remaining (dict[str, SeqRecord]): ID → SeqRecord mapping
-            post-removal of already-sampled positive sequences
-        k (int): number of sequences to sample (default=300)
-    Returns:
-        list[SeqRecord]: list of sampled SeqRecord objects taken directly from
-            seq_dict_remaining.values(); this list is then passed to
-            shuffle_records_dinuc to generate dinucleotide-shuffled negative set for control
-    """
-
-    remaining_list = list(seq_dict_remaining.values())
-
-    if len(remaining_list) < k:
-        raise ValueError(f"Requested {k} negatives but only {len(remaining_list)} available.")
-
-    return random.sample(remaining_list, k)
-
-
-def dinuc_shuffle(seq):
-    """
-    Return a dinucleotide shuffle of DNA sequence to obscure class interdependencies for negative
-    prototype data generation
-    Parameters:
-        seq (str or Seq): original negative sampled sequence
-    Returns:
-        str: dinucleotide-shuffled sequence
-    """
-
-    seq = str(seq)
-
-    # Sequence must be ≥ 2 bp to form at least one dinucleotide
-    if len(seq) < 2:
-        # Raise error to indicate imbalance in neg dataset
-        raise ValueError(
-            "Sequence too short to shuffle, resulting in imbalanced datasets "
-        )
-
-    # Build list of overlapping dinucleotides from original sequence
-    dinucs = [seq[i:i + 2] for i in range(len(seq) - 1)]
-
-    # Randomly permute dinucleotide order
-    random.shuffle(dinucs)
-
-    # Reconstruct sequence by taking 1st dinuc, appending 2nd base of each subsequent dinuc
-    shuffled = dinucs[0]
-    for d in dinucs[1:]:
-        shuffled += d[1]
-
-    return shuffled
-
-
-def shuffle_records_dinuc(sampled_list):
-    """
-    Apply dinucleotide-preserving shuffle to each SeqRecord in negative dataset for each feature
-    Parameters:
-        sampled_list (list[SeqRecord]): list of SeqRecord objects sampled for
-            negative dataset generation for prototype run
-    Returns:
-        list[SeqRecord]: list of new SeqRecord objects whose sequences have
-            been replaced with dinucleotide-shuffled versions of the originals;
-            this list is then written to FASTA as negative data for prototype run
-    """
-
-    neg_records = []  # Initiate list for negative sequence data
-
-    for rec in sampled_list:
-        shuffled_seq = dinuc_shuffle(rec.seq)
-        new_rec = rec[:]
-        new_rec.seq = rec.seq.__class__(shuffled_seq)
-        neg_records.append(new_rec)
-
-    return neg_records
-
-
-def write_negative_fasta(neg_records, outpath):
-    """
-    Write dinucleotide-shuffled negative SeqRecord objects to output FASTA file
-    Parameters:
-        neg_records (list[SeqRecord]): list of shuffled negative SeqRecord
-            objects produced by shuffle_records_dinuc
-        outpath (str): filesystem path for output FASTA file
-    Returns:
-        None: writes FASTA file to disk
-    """
-
-    SeqIO.write(neg_records, outpath, "fasta")
 
 
 def compute_class_stats(fasta_path, feature, label, source_file):
@@ -393,8 +296,209 @@ def write_preliminary_csv(rows, out_csv_path):
             writer.writerow(row)
 
 
-# Driver block for execution to create positive and negative prototype
-# fasta files of each feature class for prototype run from raw data extracted
+# Section 3: Prototype Run Only Functions
+
+def remove_sampled_from_dict(seq_dict, sampled_list):
+    """
+    Remove sampled SeqRecord objects from the original FASTA dictionary for positive
+    prototype generation.
+    Parameters:
+        seq_dict (dict[str, SeqRecord]): ID → SeqRecord mapping
+        sampled_list (list[SeqRecord]): sampled SeqRecord objects
+    Returns:
+        dict[str, SeqRecord]: updated dictionary with sampled removed
+    """
+
+    sampled_ids = {rec.id for rec in sampled_list}
+
+    return {seq_id: rec for seq_id, rec in seq_dict.items() if seq_id not in sampled_ids}
+
+
+def sample_negative_candidates(seq_dict_remaining, k=300):
+    """
+    Sample k SeqRecord objects from remaining sequence dictionary for
+    negative prototype data generation
+    Parameters:
+        seq_dict_remaining (dict[str, SeqRecord]): ID → SeqRecord mapping
+            post-removal of already-sampled positive sequences
+        k (int): number of sequences to sample (default=300)
+    Returns:
+        list[SeqRecord]: list of sampled SeqRecord objects taken directly from
+            seq_dict_remaining.values(); this list is then passed to
+            shuffle_records_dinuc to generate dinucleotide-shuffled negative set for control
+    """
+
+    remaining_list = list(seq_dict_remaining.values())
+
+    if len(remaining_list) < k:
+        raise ValueError(f"Requested {k} negatives but only {len(remaining_list)} available.")
+
+    return random.sample(remaining_list, k)
+
+
+def dinuc_shuffle(seq):
+    """
+    Return a dinucleotide shuffle of DNA sequence to obscure class interdependencies for negative
+    prototype data generation
+    Parameters:
+        seq (str or Seq): original negative sampled sequence
+    Returns:
+        str: dinucleotide-shuffled sequence
+    """
+
+    seq = str(seq)
+
+    # Sequence must be ≥ 2 bp to form at least one dinucleotide
+    if len(seq) < 2:
+        # Raise error to indicate imbalance in neg dataset
+        raise ValueError(
+            "Sequence too short to shuffle, resulting in imbalanced datasets "
+        )
+
+    # Build list of overlapping dinucleotides from original sequence
+    dinucs = [seq[i:i + 2] for i in range(len(seq) - 1)]
+
+    # Randomly permute dinucleotide order
+    random.shuffle(dinucs)
+
+    # Reconstruct sequence by taking 1st dinuc, appending 2nd base of each subsequent dinuc
+    shuffled = dinucs[0]
+    for d in dinucs[1:]:
+        shuffled += d[1]
+
+    return shuffled
+
+
+def shuffle_records_dinuc(sampled_list):
+    """
+    Apply dinucleotide-preserving shuffle to each SeqRecord in negative dataset for each feature
+    Parameters:
+        sampled_list (list[SeqRecord]): list of SeqRecord objects sampled for
+            negative dataset generation for prototype run
+    Returns:
+        list[SeqRecord]: list of new SeqRecord objects whose sequences have
+            been replaced with dinucleotide-shuffled versions of the originals;
+            this list is then written to FASTA as negative data for prototype run
+    """
+
+    neg_records = []  # Initiate list for negative sequence data
+
+    for rec in sampled_list:
+        shuffled_seq = dinuc_shuffle(rec.seq)
+        new_rec = rec[:]
+        new_rec.seq = rec.seq.__class__(shuffled_seq)
+        neg_records.append(new_rec)
+
+    return neg_records
+
+
+def write_negative_fasta(neg_records, outpath):
+    """
+    Write dinucleotide-shuffled negative SeqRecord objects to output FASTA file
+    Parameters:
+        neg_records (list[SeqRecord]): list of shuffled negative SeqRecord
+            objects produced by shuffle_records_dinuc
+        outpath (str): filesystem path for output FASTA file
+    Returns:
+        None: writes FASTA file to disk
+    """
+
+    SeqIO.write(neg_records, outpath, "fasta")
+
+
+# Section 3: Final Run Only Functions
+def extract_fasta_headers(fasta_path: str):
+    """
+    Extract all FASTA headers (without the leading '>') from a file
+    Parameters:
+    fasta_path (str): Path to the FASTA file
+    Returns:
+        list[str]: List of header strings
+    Notes:
+    - This function does not load sequences, only headers
+    - Used for header-based splitting to avoid memory overhead
+    """
+
+    headers = []
+    with open(fasta_path) as f:
+        for line in f:
+            if line.startswith(">"):
+                headers.append(line[1:].strip())
+
+    return headers
+
+
+def split_headers(headers, train_ratio: float):
+    """
+    Shuffle and split a list of FASTA headers into train/test partitions
+    Parameters:
+        headers (list[str]): List of FASTA headers
+    train_ratio (float): Fraction of headers to allocate to the training set
+    Returns:
+        (train_headers, test_headers): tuple[list[str], list[str]]
+    Notes
+    - Uses global random seed for reproducibility
+    """
+
+    random.shuffle(headers)
+    split_idx = int(len(headers) * train_ratio)
+
+    return headers[:split_idx], headers[split_idx:]
+
+
+def extract_fasta_by_headers(
+        fasta_path: str,
+        header_list: list,
+        out_fasta: str,
+        temp_header_file: str
+):
+    """
+    Extract sequences from FASTA file using seqtk and list of headers
+    Parameters:
+        fasta_path (str): Path to source FASTA file
+        header_list (list[str]): Headers to extract (must match FASTA IDs)
+        out_fasta (str): Output FASTA path
+        temp_header_file (str): Temporary file to store header list for seqtk
+    """
+
+    # Write header list to temporary file
+    with open(temp_header_file, "w") as f:
+        f.write("\n".join(header_list))
+
+    # Run seqtk subseq
+    subprocess.run(
+        ["seqtk", "subseq", fasta_path, temp_header_file],
+        stdout=open(out_fasta, "w")
+    )
+
+    # Remove temporary file
+    os.remove(temp_header_file)
+
+
+def combine_and_shuffle(input_fastas, output_fasta):
+    """
+    Combine multiple FASTA files into a single dataset and shuffle sequence order
+    Parameters:
+    input_fastas (list[str]): List of FASTA filepaths to merge
+    output_fasta (str): Path to the combined, shuffled FASTA file
+    """
+
+    all_records = []
+
+    # Load sequences from each FASTA
+    for path in input_fastas:
+        for rec in SeqIO.parse(path, "fasta"):
+            all_records.append(rec)
+
+    # Shuffle using global seed
+    random.shuffle(all_records)
+
+    # Write combined shuffled FASTA
+    SeqIO.write(all_records, output_fasta, "fasta")
+
+
+# Driver block for execution to create positive and negative dataset files
+# of each feature class for prototype run from extracted raw data
 if __name__ == "__main__":
 
     raw_dir = "data/raw"
@@ -425,7 +529,7 @@ if __name__ == "__main__":
         pos_out = os.path.join(out_dir, f"{feature}_positive.fa")
 
         # sample raw positive SeqRecords
-        sampled_pos = sample_positive_fasta(seq_dict, feature, pos_out, k=300)
+        sampled_pos = sample_fasta(seq_dict, feature, pos_out, k=300)
         # rewrite headers BEFORE writing to disk
         clean_pos = rewrite_headers(sampled_pos, f"{feature}_positive")
         # write clean FASTA
