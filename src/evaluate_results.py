@@ -97,9 +97,33 @@ def compute_overall_accuracy(conf_matrix):
     return correct / total if total > 0 else 0.0  # compute accuracy safely
 
 
+def compute_per_class_accuracy(conf_matrix, class_labels):
+    """
+    Compute per-class accuracy values.
+    Parameters:
+        conf_matrix (np.ndarray): confusion matrix
+        class_labels (list[str]): ordered list of class names
+    Returns:
+        dict[str, float]: mapping class_label → accuracy
+    """
+    n = len(class_labels)
+    accuracies = {}
+    total = conf_matrix.sum()
+
+    for idx, label in enumerate(class_labels):
+        tp = conf_matrix[idx, idx]
+        fp = conf_matrix[:, idx].sum() - tp
+        fn = conf_matrix[idx, :].sum() - tp
+        tn = total - (tp + fp + fn)
+        acc = (tp + tn) / total if total > 0 else 0.0
+        accuracies[label] = acc
+
+    return accuracies
+
+
 def summarize_loglikelihoods(pos_scores, neg_scores):
     """
-    Compute summary statistics for positive vs negative log-likelihoods
+    Compute summary statistics for  log-likelihoods
     Parameters:
         pos_scores (list[float]): log-likelihoods for true class sequences
         neg_scores (list[float]): log-likelihoods for non-class sequences
