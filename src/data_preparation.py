@@ -154,19 +154,9 @@ def filter_by_length(
     return filtered
 
 
-def sample_fasta(seq_dict, feature, outpath, k=300):
+def sample_fasta(seq_dict, k: int):
     """
-    Sample k sequences from FASTA dictionary and write to new FASTA
-    file for each structural class.
-    Parameters:
-        seq_dict (dict[str, SeqRecord]): ID → SeqRecord mapping
-        feature (str): inferred genomic feature from raw filename
-        outpath (str): filesystem path for output FASTA file
-        k (int): number of sequences to sample (default=300)
-    Returns:
-        list[SeqRecord]: the sampled SeqRecord objects taken directly from
-            seq_dict.values(); list is passed to remove_sampled_from_dict
-            to eliminate previously sampled entries from original dictionary
+    Randomly sample up to k SeqRecords from a dictionary of sequences.
     """
 
     total = len(seq_dict)
@@ -174,11 +164,12 @@ def sample_fasta(seq_dict, feature, outpath, k=300):
     if total < k:
         raise ValueError(f"Requested {k} sequences but only {total} available.")
 
-    sampled_list = random.sample(list(seq_dict.values()), k)
+    seqs = list(seq_dict.values())
 
-    SeqIO.write(sampled_list, outpath, "fasta")
+    if len(seqs) <= k:
+         return seqs
 
-    return sampled_list
+    return random.sample(seqs, k)
 
 
 def compute_class_stats(fasta_path, feature, label, source_file):
@@ -495,81 +486,3 @@ def combine_and_shuffle(input_fastas, output_fasta):
 
     # Write combined shuffled FASTA
     SeqIO.write(all_records, output_fasta, "fasta")
-
-
-# Driver block for execution to create positive and negative dataset files
-# of each feature class for prototype run from extracted raw data
-if __name__ == "__main__":
-
-    raw_dir = "data/raw"
-    out_dir = "data/prototype"
-
-    # Files to process
-    fasta_files = [
-        "promoters_raw.fa",
-        "exons_raw.fa",
-        "introns_raw.fa",
-        "repeats_raw.fa"
-    ]
-
-    for fname in fasta_files:
-        inpath = os.path.join(raw_dir, fname)
-
-        # Track feature class and create dictionary of seq ID:SeqRecord for each seq
-        feature, seq_dict = load_fasta(inpath)
-        print(f"\nProcessing {feature} from {inpath}")
-
-        # ✔️ Count raw sequences in each input file
-        count_seqs(seq_dict, feature)
-
-        # ✔️ Filter for valid lengths in classes introns/exons
-        seq_dict = filter_by_length(seq_dict, feature)
-
-        # Positive output path
-        pos_out = os.path.join(out_dir, f"{feature}_positive.fa")
-
-        # sample raw positive SeqRecords
-        sampled_pos = sample_fasta(seq_dict, feature, pos_out, k=300)
-        # rewrite headers BEFORE writing to disk
-        clean_pos = rewrite_headers(sampled_pos, f"{feature}_positive")
-        # write clean FASTA
-        SeqIO.write(clean_pos, pos_out, "fasta")
-
-        # Remove positives from dictionary
-        seq_dict_remaining = remove_sampled_from_dict(seq_dict, sampled_pos)
-
-        # Sample negatives
-        neg_candidates = sample_negative_candidates(seq_dict_remaining, k=300)
-        neg_records = shuffle_records_dinuc(neg_candidates)
-
-        # Negative output path
-        neg_out = os.path.join(out_dir, f"{feature}_negative.fa")
-        # rewrite headers BEFORE writing to disk
-        clean_neg = rewrite_headers(neg_records, f"{feature}_negative")
-        # write clean FASTA for model
-        SeqIO.write(clean_neg, neg_out, "fasta")
-
-        print(f"Finished {feature}:")
-        print(f"  → {pos_out}")
-        print(f"  → {neg_out}")
-
-    # After generating all prototype run files, compute preliminary stats
-    prelim_rows = []
-    prelim_csv = os.path.join(out_dir, "preliminary_characteristics.csv")
-
-    for fname in fasta_files:
-        feature = infer_dataclass(fname)
-        source_file = fname
-
-        pos_path = os.path.join(out_dir, f"{feature}_positive.fa")
-        neg_path = os.path.join(out_dir, f"{feature}_negative.fa")
-
-        prelim_rows.append(
-            compute_class_stats(pos_path, feature, "positive", source_file)
-        )
-        prelim_rows.append(
-            compute_class_stats(neg_path, feature, "negative", source_file)
-        )
-
-    write_preliminary_csv(prelim_rows, prelim_csv)
-    print(f"\nWrote preliminary characteristics csv → {prelim_csv}")
