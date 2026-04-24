@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+
 import sys
 from src.data_loading import load_class_seqs
-from src.train_models import train_markov
+from src.training_utils
 from src.analyze_data import classify_test_set
 from src.output_to_file import write_all_outputs
 from src.analyze_data import compute_accuracy

@@ -5,11 +5,9 @@ Utility functions for computing per-class reject thresholds for
 Markov-model classification.
 """
 
-from per_base_likelihood import per_base_likelihood
-
-
 import numpy as np
 from per_base_likelihood import per_base_likelihood
+
 
 def compute_thresholds(training_data, models, k, percentile=1):
     """

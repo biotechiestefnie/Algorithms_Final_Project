@@ -1,4 +1,11 @@
+"""
 
+data_preparation.py
+
+The following script holds all functions used to extract sequences from raw files, create
+prototype positive and negative (control) datasets for each class, and generate training
+and testing datasets containing all classes combined in each, for the final run.
+"""
 
 # Section 1: Imports, Seeds, Global Params
 
