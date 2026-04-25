@@ -493,3 +493,21 @@ def combine_and_shuffle(input_fastas, output_fasta):
 
     # Write combined shuffled FASTA
     SeqIO.write(all_records, output_fasta, "fasta")
+
+
+def count_seqs_in_fasta(filepath):
+    """
+    Return the number of sequences in a single FASTA file.
+    """
+    return sum(1 for _ in SeqIO.parse(filepath, "fasta"))
+
+
+def total_bp_in_fasta(filepath):
+    """
+    Return the total number of base pairs across all sequences in a FASTA file.
+    """
+    total_bp = 0
+    for record in SeqIO.parse(filepath, "fasta"):
+        total_bp += len(record.seq)
+    return total_bp
+

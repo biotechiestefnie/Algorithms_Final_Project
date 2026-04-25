@@ -1,0 +1,187 @@
+EPDnew (Eukaryotic Promoter Database), Human Promoter Collection (hg38).
+Meylan P, Dreos R, Ambrosini G, Groux R, Bucher P.
+EPD in 2020: enhanced data visualization and extension to ncRNA promoters.
+Nucleic Acids Research, 2020; 48(D1):D65–D69.
+Last update: October 2019.
+Accessed: April 2026.
+URL: https://epd.epfl.ch/human/
+1796 sequences representative set of not closely related sequences
+
+
+Intron/exon data
+https://www.gencodegenes.org/human/release_19.html
+Comprehensive gene annotation	ALL
+It contains the comprehensive gene annotation on the reference chromosomes, scaffolds, assembly patches and alternate loci (haplotypes)
+This is a superset of the main annotation file
+GTF
+and
+Protein-coding transcript translation sequences	CHR
+Amino acid sequences of coding transcript translations on the reference chromosomes
+Transcript biotypes: protein_coding, nonsense_mediated_decay, non_stop_decay, IG_*_gene, TR_*_gene, polymorphic_pseudogene
+Fasta
+Harrow J, Frankish A, Gonzalez JM, et al.
+GENCODE: the reference human genome annotation for The ENCODE Project.
+Genome Research 2012;22(9):1760–1774.
+doi:10.1101/gr.135350.111
+This is the canonical citation for all GENCODE human releases, including v19.
+GENCODE Human Release 19 (GRCh37.p13)
+Available at: https://www.gencodegenes.org/human/release_19/
+© EMBL‑EBI, HAVANA, and Ensembl.
+Correct Citation:
+Intron and exon sequences were extracted from the
+GENCODE Human Release 19 (GRCh37.p13) comprehensive gene annotation (GTF)
+and the corresponding GRCh37.p13 genome FASTA, downloaded from the GENCODE FTP site.
+
+Repeat Motif Data
+
+
+
+
+
+Woodard, D. B. & Rosenthal, J. S. (2013). Convergence rate of Markov chain methods for genomic motif discovery. Ann. Statist. 41(1): 91 - 124. 
+	https://doi.org/10.1214/12-AOS1075
+
+Hu, S. & Chen, C. (2024). Performance models for sequence alignment
+	algorithms based on Burrows-Wheeler Transform. ICBBT (16th Annual):
+	p.1-9.  https://dl.acm.org/doi/10.1145/3674658.3674661
+
+Ost, G. & Takahashi, D. L. (2023). Sparse Markov models for high
+	dimensional inference. Cornell University AriXiv: 2202.08007, p.1-44.
+	https://arxiv.org/abs/2202.08007
+
+Pokrzywa, R. (2009) Application of the Burrows-Wheeler Transform for
+	searching for tandem repeats in DNA sequences. Int J Bioinform Res App.
+	5(4):432-46. https://doi.org/10.1504/IJBRA.2009.027517
+
+Bi, C. (2009). A Monte Carlo EM algorithm for de novo motif discovery in
+	biomolecular sequences. IEEE/ACM Transactions on Comp Biol and Bioinf,
+	6(3): 370-387. https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4641908
+
+Bi, C. (2009). DNA motif alignment by evolving a population of Markov
+	chains. BMC Bioinformatics.10 Suppl 1(Suppl 1):S13.
+	https://doi.org/10.1186/1471-2105-10-S1-S13
+
+Gelfond, J. A., Gupta, M., & Ibrahim, J. G. (2009). A Bayesian hidden
+	Markov model for motif discovery through joint modeling of genomic
+	sequence and ChIP-chip data. Biometrics, 65(4):1087-95.
+	https://doi.org/10.1111/j.1541-0420.2008.01180.x
+
+Gusfield, D. (1997). Algorithms on strings, trees, and sequences:
+	Computer science and computational biology. Cambridge University Press.
+	https://www.inf.ufes.br/~berilhes/Cursos/TBO2008-1/gusfield.pdf
+
+Gustafsson, J., Norberg, P., Qvick-Wester, & Schliep, A. (2021). Fast parallel 
+	construction of variable-length Markov chains. BMC Bioinformatics,
+	22(487): 1-23. https://doi.org/10.1186/s12859-021-04387-y
+
+Hendrix, D. A. (2019). Applied bioinformatics of nucleic acid sequences.
+	Creative Commons. Pressbooks. https://open.oregonstate.education/appliedbioinformatics/front-matter/applied-bioinformatics/#front-matter-490-section-1
+
+Huang, W., Umbach, D. M., Ohler, U., & Li, L. (2006). Optimized mixed
+	Markov models for motif identification. BMC Bioinformatics, 7(279).
+	https://doi.org/10.1186/1471-2105-7-279
+
+Ma, Y., Chen, H., Kang, J., Guo, X., Sun, C., Xu, J., Tao, J., Wei, S.,
+	Dong, Y., Tian, H.,Lv, W., Jia, Z., Bi, S., Shang, Z., Zhang, C., Lv,
+	H., Jiang, Y., Zhang, M. (2026). The hidden Markov model and its
+	applications in bioinformatics analysis. Genes & Diseases,13(1):101729.
+	https://doi.org/10.1016/j.gendis.2025.101729
+
+Maiti, A. & Mukherjee, A. (2015). On the Monte Carlo expectation
+	maximization for finding motifs in DNA sequences. .IEEE .Journal .of
+	.Biomedical & .Health .Informatics, 19(2): 677-687.
+	https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6812135
+
+Pokrzywa, R. (2008). Searching for unique DNA sequences with the
+	Burrows-Wheeler Transform. .Biocybernetics .& .Biomedical .Engineering,
+	28(1): 95-104. https://ibib.pl/images/ibib/grupy/Wydawnictwa-Tomy/dokumenty/2008/BBE_28_1_095_FT.pdf
+
+Powell, M. (2001). Compressed-domain pattern matching with the
+	Burrows-Wheeler Transform. .Honours .Project .Report, p.1-51.
+	https://corpus.canterbury.ac.nz/research/powell2001_hons_report.pdf
+
+Schbath, S., Prum, B., & De Turchkheim, E. (1995). Exceptional motifs in
+	different Markov chain models for a statistical analysis of DNA
+	sequences. .Journal .of .Computational .Biology, 2(3).
+	https://doi.org/10.1089/cmb.1995.2.417
+
+Schutz, F. & Delorenzi, M. (2008). MAMOT: Hidden Markov modeling tool.
+Bioinformatics, 24(11): 1399-1400.
+<https://doi.org/10.1093/bioinformatics/btn201>
+
+Toivonen, J., Das, P. K., Taipale, J., & Ukkonen, E. (2020). MODER2:
+first-order Markov modeling and discovery of monomeric and dimeric
+binding motifs, Bioinformatics, 36(9): 2690–2696,
+<https://doi.org/10.1093/bioinformatics/btaa045>
+
+Vanet, A., Marsan, L., & Sagot, M. F. (1999). Promoter sequences and
+algorithmical methods for identifying them. Research in Microbiology,
+150(9-10): 779-799. <https://doi.org/10.1016/S0923-2508(99)00115-1>
+
+Won, K. J., Sandelin, A., Marstrand, T. T., & Krogh, A. (2008). Modeling
+promoter grammars with evolving hidden Markov models. Bioinformatics,
+24(15): 1669-1675. <https://doi.org/10.1093/bioinformatics/btn254>
+
+Woodard, D. B. & Rosenthal, J. S. (2012). Convergence rate of Markov
+chain methods for genomic motif discovery. Annals of Statistics, 1-36.
+<https://www.probability.ca/jeff/ftpdir/motifFinding.pdf>
+
+Yada, T., Totoki, Y., Ishikawa, M., Asai, K., & Nakai, K. (1998).
+Automatic extraction of motifs represented in the hidden Markov model
+from a number of DNA sequences. Bioinformatics, 14(4): 317-325.
+<https://doi.org/10.1093/bioinformatics/14.4.317>
+
+Zhao, X., Huang, H., & Speed, T. P. (2004). Finding short DNA motifs
+using permuted Markov models. RECOMB ’04: Proceedings of 8th Annual
+Int’l Conf. Res. Comp MB, p.68-75.
+<https://doi.org/10.1145/974614.974624>
+
+Zhao, X. & Sze, S. H. (2011). Motif finding in DNA sequences based on
+skipping nonconserved positions in background Markov chains. Journal of
+Computational Biology, 18(5). <https://doi.org/10.1089/cmb.2010.0197>
+
+Baum, L. E. & Petrie, T. (1966). Statistical inference for probabilistic 
+functions of finite state Markov chains. The Annals of Mathematical Statistics,
+37(6): 1554-1563. https://doi.org/10.1214/aoms/1177699147
+
+Baum, L. E., Petrie, T., Soules, G., & Weiss, N. (1970). A maximization technique occurring in the statistical analysis of probabilistic functions of Markov chains. *The Annals of Mathematical Statistics,* 41(1), 164-171. https://doi.org/10.1214/aoms/1177697196
+
+Berchtold, A. & Raftery, A. (2002) The mixture transition distribution model for high-order Markov chains and non-Gaussian time series. *Statistical Science,* 17(3):328– 356.
+
+Birney, E. (2001). Hidden Markov models in biological sequence analysis. *IBM J. Res. Dev.,* 45: 449-454. https://doi.org/10.1147/rd.453.0449
+
+Buhlmann, P. & Wyner, A. J. (1999). Variable length markov chains. *The Annals of Statistics,* 27(2):480–513.
+
+Burks, D. J. & Azad, R. K. (2020). Higher-order Markov models for metagenomic sequence classification. *Bioinformatics,* 36(14): 4130–4136, https://doi.org/10.1093/bioinformatics/btaa562
+
+Choo, K. H., Tong, J. C., & Zhang, L. (2004). Recent applications of Hidden Markov Models in computational biology. *Genomics Proteomics Bioinformatics,* 2(2):84-96. https://doi.oorg/10.1016/s1672-0229(04)02014-5
+
+Cowan, D. (2026). The science of machine learning and AI: Markov chains. Creative Commons Attribution-ShareAlike 4.0 International License. Accessed on Mar 28, 2026, from https://www.ml-science.com/markov-chains
+
+Dreos, R., Ambrosini, G., Périer, R. C., & Bucher, P. (2013). EPD and EPDnew, high-quality promoter resources in the next-generation sequencing era. *Nucleic Acids Research,* 41(D1): D157–D164. https://doi.org/10.1093/nar/gks1233
+
+Heiner, M. & Kottas, A. (2021) Estimation and selection for high-order markov chains with bayesian mixture transition distribution models. *Journal of Computational and Graphical Statistics,* 1–13.
+
+Ma, Y., Chen, H., Kang, J., Guo, X., Sun, C., Xu, J., Tao, J., Wei, S., Dong, Y., Tian, H., Lv, W., Jia, Z., Bi, S., Shang, Z., Zhang, C., Lv, H., Jiang, Y., & Zhang, M. (2025). The hidden Markov model and its applications in bioinformatics analysis. *Genes Dis,* 13(1):101729. https://doi.org/10.1016/j.gendis.2025
+
+Ost, G. & Takahashi, D. Y. (2023). Sparse Markov models for high dimensional inference. 
+
+Pertea, G. & Pertea, M. (2020). GFF Utilities: GffRead and GffCompare. *F1000Research,* 9(304): 1-13. https://doi.org/10.12688/f1000research.23297.1.
+
+Pokrzywa, R. (2009). Application of the Burrows-Wheeler Transform for searching for tandem repeats in DNA sequences. *Int J Bioinform Res Appl.,* 5(4): 432-46. https://doi.org/10.1504/IJBRA.2009.027517
+
+Ramos, R. T., Carneiro, A. R., Baumbach, J., Azevedo, V., Schneider, M. P., & Silva, A. (2011). Analysis of quality raw data of second generation sequencers with Quality Assessment Software. *BMC Res Notes,* 4:130. https://doi.org/10.1186/1756-0500-4-130
+
+Reitz, k. (2024). The hitchiker's guide to Python. Accessed on Apr2, 2026, from https://docs.python-guide.org
+
+Ryabko, B. & Usotskaya, N. (2008). DNA-sequence analysis using Markov chain models. *IEEE Xplore,* 119-123. https://doi.org/10.1109/ITW.2008.4578634. 
+
+Sakharkara, M. K., Chowb, T. K. V., & Kangueane, P. (2004). Distributions of exons and introns in the human genome. *In Silico Biol,* 4(0032): 387-393. http://www.bioinfo.de/isb/2004/04/0032/
+
+Wang, J. & Hannenhalli, S. (2005). Generalizations of Markov model to characterize biological sequences. *BMC Bioinformatics,* 6:219. https://doi.org/10.1186/1471-2105-6-219
+
+Won, K. J., Sandelin, A., Marstrand, T. T., & Krogh, A. (2008). Modeling promoter grammars with evolving hidden Markov models. *Bioinformatics,* 24(15):1669-1675. https://doi.org/10.1093/bioinformatics/btn254
+
+Yoon, B. J. (2009). Hidden Markov models and their applications in biological sequence analysis. *Curr Genomics,* 10(6):402-15. https://doi.org/10.2174/138920209789177575
+
+
