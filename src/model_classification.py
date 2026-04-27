@@ -58,7 +58,7 @@ def classify_with_reject(seq, models, k, thresholds):
 
     # Reject if below that class's threshold
     if best_score < thresholds[best_class]:
-        return "neither", scores
+        return "reject", scores
 
     return best_class, scores
 
