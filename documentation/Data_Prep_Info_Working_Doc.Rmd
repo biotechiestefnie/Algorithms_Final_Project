@@ -1,0 +1,19 @@
+---
+title: "Data Preparation Documentation"
+author: "Stefanie Moreno"
+date: "2026-03-22"
+output:
+  md_document:
+    variant: gfm
+---
+
+### Data Preparation
+For my final run, I randomly sampled from the same raw datafiles, but I only sampled once since I would not need
+negative (control) samples for execution. This is because the negative sequences for each class are the remaining
+three structural features, for instance: a sequence for promoters is positive if it is a promoter, but negative
+if it is a repeat, intron, or exon. I will also be providing the model with a reject option, which is something I
+added during the prototype run to enable descrimination between "not a promoter" and identification as another class.
+
+The raw datafiles I collected from the H. sapiens GRCh37.p13.genome assembly all contained experimentally validated sequences belonging to the following genomic structural features: promoters, introns, exons, repeats. Initially, I had intended on including indels, however, upon further consideration, I determined they would not yield meaningful insight into the functional boundaries of varying k values for a Markov Chain model. 
+
+To determine the total sample size of each class for the final execution, I evaluated the total sequences in each raw file. The promoters class had a total of 1796 sequences, exons had 104,142, introns had 1,081,868, and repeats had 3,861. 

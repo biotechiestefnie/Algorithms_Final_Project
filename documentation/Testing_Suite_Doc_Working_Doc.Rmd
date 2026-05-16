@@ -1,0 +1,10 @@
+---
+title: "TESTING Suite Documentation"
+author: "Stefanie Moreno"
+date: "2026-04-15"
+output:
+  md_document:
+    variant: gfm
+---
+
+This document details the project's testing suite and its implementation. It includes final outputs for each test as confirmation of functionality for the main scripts. All pytest scripts were custom-written according to potential edge cases that are common in Markov Chain models. This document is organized by pytest scripts, with a short explanation of what each function is testing.
