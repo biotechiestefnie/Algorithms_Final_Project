@@ -390,7 +390,7 @@ This study relies on several configuration parameters that directly
 influence model behavior and must be treated as fixed experimental
 values These include:
 
-*Selected k orders tested (k = 1, 2, 3, 4)*  
+*Selected k orders tested (k = 1, 2, 3, 4, 5, 6)*  
 - These determine the k‑mer size and directly influence sparsity,
 transition probability estimation, and class separation
 
