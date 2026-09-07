@@ -1,0 +1,39 @@
+Upon running the final implementation of the models, I obtained some rather interesting results. Promoters scored consistently high across all k values, averaging 92.94% 
+accuracy. Introns also performed rather well, with accuracy increasing as k increased and reaching a maximum of 87.36%. The accuracies for exons and repeats also rose 
+alongside k, indicating that taking more of the surrounding sequence context into account improved model performance across all features. This is likely due to the inherent 
+structural complexities of DNA. Contrary to popular belief, human promoters are not characterized by short, easily identifiable regions like a TATA box, which is only present 
+in about 15–17% of promoters. Instead, they lack strict sequence conservation and are usually defined by broader, more complex regional features (Putta & Mitra, 2010).Even 
+so, the model excelled at picking up these regional characteristics, identifying promoters with the greatest accuracy. 
+
+While intron regions rely on highly stereotyped, universal sequence boundaries to dictate splicing, these splice sites constitute only a tiny fraction of the total sequence 
+length. The rest of the intron and exon bodies are highly variable. In contrast, the broader regulatory motif combinations and regional biases of promoters may provide a 
+more distinct, continuous signature. This likely explains why the model, relying on sequence context across k values, captured promoter characteristics more effectively than 
+the localized boundaries of introns and exons.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+References
+
+Putta P, Mitra CK. Conserved short sequences in promoter regions of human genome. J Biomol Struct Dyn. 2010 Apr;27(5):599-610. doi: 10.1080/07391102.2010.10508574.
